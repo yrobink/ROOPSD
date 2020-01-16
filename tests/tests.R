@@ -242,9 +242,9 @@ test_distribution = function( law , show = TRUE ,  ... )##{{{
 run_all_tests = function( show = FALSE )##{{{
 {
 	## Test distributions
-	test_distribution( ROOPSD::Normal      , show = show , mean = 0 , sd = 1       , freeze = FALSE )
+	test_distribution( ROOPSD::Normal      , show = show , mean = 2 , sd = 3       , freeze = FALSE )
 	test_distribution( ROOPSD::Exponential , show = show , rate = 0.5              , freeze = FALSE )
-	test_distribution( ROOPSD::Gamma       , show = show , scale = 0.5 , shape = 2 , freeze = FALSE )
+	test_distribution( ROOPSD::Gamma       , show = show , shape = 2 , scale = 0.5 , freeze = FALSE )
 }
 ##}}}
 
