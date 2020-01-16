@@ -2,14 +2,20 @@
 
 ## Features
 
+## TODO
+Law to add:
+- GEV
+- GPD
+- Empirical
+- uniform
+- mixture
+
 ## R instruction
 
 Requires:
 - R
 - roxygen2
 - devtools
-- Rcpp
-- RcppEigen
 - methods
 - R6
 
