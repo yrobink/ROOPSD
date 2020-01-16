@@ -111,31 +111,6 @@ Gamma = R6::R6Class( "Gamma",
 	
 	inherit = AbstractDist,
 	
-	## Public elements
-	##============={{{
-	
-	public = list(
-	
-	## Arguments
-	##==========
-	shape = 0.,
-	scale = 1.,
-	
-	
-	## Constructor
-	##============
-	
-	initialize = function( shape = 0.5 , scale = 1 , freeze = FALSE )##{{{
-	{
-		super$initialize( stats::dgamma , stats::pgamma , stats::qgamma , stats::rgamma , freeze )
-		self$shape = shape
-		self$scale = scale
-	}
-	##}}}
-	
-	),
-	##}}}
-	
 	## Private elements
 	##==============={{{
 	private = list(
@@ -162,7 +137,33 @@ Gamma = R6::R6Class( "Gamma",
 	}
 	##}}}
 	
+	),
+	##}}}
+	
+	## Public elements
+	##============={{{
+	
+	public = list(
+	
+	## Arguments
+	##==========
+	shape = 0.,
+	scale = 1.,
+	
+	
+	## Constructor
+	##============
+	
+	initialize = function( shape = 0.5 , scale = 1 , freeze = FALSE )##{{{
+	{
+		super$initialize( stats::dgamma , stats::pgamma , stats::qgamma , stats::rgamma , "Gamma" , freeze )
+		self$shape = shape
+		self$scale = scale
+	}
+	##}}}
+	
 	)
 	##}}}
+	
 )
 

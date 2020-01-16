@@ -111,27 +111,9 @@ Normal = R6::R6Class( "Normal",
 	
 	inherit = AbstractDist,
 	
-	## Public elements
-	##============={{{
-	
-	public = list(
-	
-	## Arguments
-	##==========
-	mean = 0.,
-	sd   = 1.,
-	
-	
-	## Constructor
-	##============
-	
-	initialize = function( mean = 0 , sd = 1 , freeze = FALSE )##{{{
-	{
-		super$initialize( stats::dnorm , stats::pnorm , stats::qnorm , stats::rnorm , freeze )
-		self$mean = mean
-		self$sd   = sd
-	}
-	##}}}
+	## Active elements
+	##================{{{
+	active = list(
 	
 	),
 	##}}}
@@ -160,7 +142,33 @@ Normal = R6::R6Class( "Normal",
 	}
 	##}}}
 	
+	),
+	##}}}
+	
+	## Public elements
+	##============={{{
+	
+	public = list(
+	
+	## Arguments
+	##==========
+	mean = 0.,
+	sd   = 1.,
+	
+	
+	## Constructor
+	##============
+	
+	initialize = function( mean = 0 , sd = 1 , freeze = FALSE )##{{{
+	{
+		super$initialize( stats::dnorm , stats::pnorm , stats::qnorm , stats::rnorm , "Normal" , freeze )
+		self$mean = mean
+		self$sd   = sd
+	}
+	##}}}
+	
 	)
 	##}}}
+	
 )
 

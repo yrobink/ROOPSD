@@ -109,29 +109,6 @@ Exponential = R6::R6Class( "Exponential",
 	
 	inherit = AbstractDist,
 	
-	## Public elements
-	##============={{{
-	
-	public = list(
-	
-	## Arguments
-	##==========
-	rate = 1.,
-	
-	
-	## Constructor
-	##============
-	
-	initialize = function( rate = 1. , freeze = FALSE )##{{{
-	{
-		super$initialize( stats::dexp , stats::pexp , stats::qexp , stats::rexp , freeze )
-		self$rate = rate
-	}
-	##}}}
-	
-	),
-	##}}}
-	
 	## Private elements
 	##==============={{{
 	private = list(
@@ -154,8 +131,32 @@ Exponential = R6::R6Class( "Exponential",
 	}
 	##}}}
 	
+	),
+	##}}}
+	
+	## Public elements
+	##============={{{
+	
+	public = list(
+	
+	## Arguments
+	##==========
+	rate = 1.,
+	
+	
+	## Constructor
+	##============
+	
+	initialize = function( rate = 1. , freeze = FALSE )##{{{
+	{
+		super$initialize( stats::dexp , stats::pexp , stats::qexp , stats::rexp , "Exponential" , freeze )
+		self$rate = rate
+	}
+	##}}}
+	
 	)
 	##}}}
+	
 )
 ##}}}
 

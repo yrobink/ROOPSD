@@ -131,6 +131,57 @@
 #' @export
 AbstractDist = R6::R6Class( "AbstractDist",
 	
+	## Private elements
+	##==============={{{
+	
+	private = list(
+	
+	## Arguments
+	##==========
+	
+	.name = NULL,
+	
+	## Methods
+	##========
+	
+	params = function()##{{{
+	{},
+	##}}}
+	
+	set_params = function(params)##{{{
+	{},
+	##}}}
+	
+	negloglikelihood = function( params , Y )##{{{
+	{
+		private$set_params(params)
+		return(-base::sum(self$logdensity(Y)))
+	},
+	##}}}
+	
+	fit_initialization = function(Y)##{{{
+	{}
+	##}}}
+	
+	),
+	##}}}
+	
+	## Active elements
+	##================{{{
+	active = list(
+	
+	name = function(value) ##{{{
+	{
+		if(base::missing(value))
+		{
+			return(private$.name)
+		}
+	}
+	##}}}
+	
+	),
+	##}}}
+	
 	## Public elements
 	##============={{{
 	public = list(
@@ -146,13 +197,14 @@ AbstractDist = R6::R6Class( "AbstractDist",
 	## Constructor
 	##============
 	
-	initialize = function( ddist , pdist , qdist , rdist , freeze = FALSE )##{{{
+	initialize = function( ddist , pdist , qdist , rdist , name , freeze = FALSE )##{{{
 	{
 		self$ddist = ddist
 		self$pdist = pdist
 		self$qdist = qdist
 		self$rdist = rdist
 		self$freeze = freeze
+		private$.name = name
 	},
 	##}}}
 	
@@ -228,33 +280,6 @@ AbstractDist = R6::R6Class( "AbstractDist",
 		opt = stats::optim( par = as.vector(private$params()) , fn = private$negloglikelihood , method = "BFGS" , Y = Y )
 		private$set_params(opt$par)
 	}
-	##}}}
-	
-	),
-	##}}}
-	
-	## Private elements
-	##==============={{{
-	
-	private = list(
-	
-	params = function()##{{{
-	{},
-	##}}}
-	
-	set_params = function(params)##{{{
-	{},
-	##}}}
-	
-	negloglikelihood = function( params , Y )##{{{
-	{
-		private$set_params(params)
-		return(-base::sum(self$logdensity(Y)))
-	},
-	##}}}
-	
-	fit_initialization = function(Y)##{{{
-	{}
 	##}}}
 	
 	)
