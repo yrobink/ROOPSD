@@ -176,17 +176,75 @@ plt = PlotTools$new()
 ## Functions ##
 ###############
 
-## Some functions
-##===============
+## Test distributions
+##===================
 
-## Test tools
-##===========
+test_distribution = function( law , show = TRUE ,  ... )##{{{
+{
+	## Set the law
+	params  = list(...)
+	law_set = base::do.call( law$new , params )
+	
+	## Generate a sample
+	X = law_set$rvs( n = 10000 )
+	
+	## Fit params
+	law_fit = law$new()
+	law_fit$fit(X)
+	
+	## Possible values:
+	q = base::seq( base::min(X) , base::max(X) , length = 100 )
+	p = base::seq( 0 , 1 , length = 100 )
+	
+	## Test functions
+	cdfS  = law_set$cdf(q)
+	cdfF  = law_fit$cdf(q)
+	
+	sfS   = law_set$sf(q)
+	sfF   = law_fit$sf(q)
+	
+	icdfS = law_set$icdf(p)
+	icdfF = law_fit$icdf(p)
+	
+	isfS  = law_set$isf(p)
+	isfF  = law_fit$isf(p)
+	
+	densS = law_set$density(q)
+	densF = law_fit$density(q)
+	
+	if( show )
+	{
+		name = law_set$name
+		
+		plt$new_screen()
+		graphics::par( mfrow = base::c( 2 , 3 ) )
+		
+		graphics::plot(  q , cdfS  , col = "blue" , type = "l" , main = base::paste( name , "CDF" ) , xlab = "quantile" , ylab = "proba" )
+		graphics::lines( q , cdfF  , col = "red"  , type = "l" , main = base::paste( name , "CDF" ) , xlab = "quantile" , ylab = "proba" )
+		
+		graphics::plot(  q , sfS   , col = "blue" , type = "l" , main = base::paste( name , "SF" ) , xlab = "quantile" , ylab = "proba" )
+		graphics::lines( q , sfF   , col = "red"  , type = "l" , main = base::paste( name , "SF" ) , xlab = "quantile" , ylab = "proba" )
+		
+		graphics::plot(  q , densS , col = "blue" , type = "l" , main = base::paste( name , "density" ) , xlab = "quantile" , ylab = "proba" )
+		graphics::lines( q , densF , col = "red"  , type = "l" , main = base::paste( name , "density" ) , xlab = "quantile" , ylab = "proba" )
+		graphics::plot(  p , icdfS , col = "blue" , type = "l" , main = base::paste( name , "iCDF" ) , ylab = "quantile" , xlab = "proba" )
+		graphics::lines( p , icdfF , col = "red"  , type = "l" , main = base::paste( name , "iCDF" ) , ylab = "quantile" , xlab = "proba" )
+		graphics::plot(  p , isfS  , col = "blue" , type = "l" , main = base::paste( name , "iSF" ) , ylab = "quantile" , xlab = "proba" )
+		graphics::lines( p , isfF  , col = "red"  , type = "l" , main = base::paste( name , "iSF" ) , ylab = "quantile" , xlab = "proba" )
+	}
+	
+}
+##}}}
 
 ## All in one
 ##===========
 
 run_all_tests = function( show = FALSE )##{{{
 {
+	## Test distributions
+	test_distribution( ROOPSD::Normal      , show = show , mean = 0 , sd = 1       , freeze = FALSE )
+	test_distribution( ROOPSD::Exponential , show = show , rate = 0.5              , freeze = FALSE )
+	test_distribution( ROOPSD::Gamma       , show = show , scale = 0.5 , shape = 2 , freeze = FALSE )
 }
 ##}}}
 
@@ -195,6 +253,7 @@ run_all_tests = function( show = FALSE )##{{{
 ##########
 ## main ##
 ##########
+
 
 ## Read command line arguments and run (or not) tests
 ##================================================{{{
