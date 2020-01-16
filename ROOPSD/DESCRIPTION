@@ -1,9 +1,12 @@
-Package: RPOOstats
-Title: What the Package Does (one line, title case)
-Version: 0.0.0.9000
-Authors@R: person("First", "Last", email = "first.last@example.com", role = c("aut", "cre"))
-Description: What the package does (one paragraph).
-Depends: R (>= 3.5.0)
-License: What license is it under?
+Package: ROOPSD
+Title: R Object Oriented Programming for Statistical Distribution
+Version: 0.0.1
+Date: 2020-01-16
+Authors@R: person("Yoann", "Robin", email = "yoann.robin.k@gmail.com", role = c("aut", "cre"))
+Description: Statistical distribution in OOP way.
+Depends: R (>= 3.3.3)
+License: CeCILL-C
 Encoding: UTF-8
 LazyData: true
+Imports: methods, R6
+RoxygenNote: 6.1.1
