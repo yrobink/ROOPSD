@@ -135,37 +135,42 @@ Empirical = R6::R6Class( "Empirical" ,
 	## Constructor ##
 	#################
 	
-	initialize = function()
+	initialize = function()##{{{
 	{},
+	##}}}
 	
-	rvs = function( n )
+	rvs = function( n )##{{{
 	{
 		p = stats::runif( n , 0 , 1 )
 		return(self$icdf(p))
 	},
+	##}}}
 	
-	cdf = function( q )
+	cdf = function( q )##{{{
 	{
 		return(private$cdffn(q))
 	},
+	##}}}
 	
-	icdf = function( p )
+	icdf = function( p )##{{{
 	{
 		return(private$icdffn(p))
 	},
+	##}}}
 	
-	sf = function( q )
+	sf = function( q ) ##{{{
 	{
 		return( 1. - private$cdffn(q) )
 	},
+	##}}}
 	
-	isf = function( p )
+	isf = function( p ) ##{{{
 	{
 		return(private$icdffn(1. - p))
 	},
+	##}}}
 	
-	
-	fit = function( Y , bins = as.integer(100) )
+	fit = function( Y , bins = as.integer(100) )##{{{
 	{
 		self$min = base::min(Y)
 		self$max = base::max(Y)
@@ -187,6 +192,7 @@ Empirical = R6::R6Class( "Empirical" ,
 		quants = private$cdffn(x)
 		private$icdffn = stats::approxfun( quants , x , yleft = self$min - delta , yright = self$max + delta )
 	}
+	##}}}
 	
 	),
 	

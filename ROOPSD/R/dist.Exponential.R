@@ -113,21 +113,56 @@ Exponential = R6::R6Class( "Exponential",
 	##==============={{{
 	private = list(
 	
-	params = function()##{{{
-	{
-		return( list( rate = self$rate ) )
-	},
-	##}}}
+	## Arguments
+	##==========
 	
-	set_params = function(params)##{{{
-	{
-		self$rate = params[1]
-	},
-	##}}}
+	.rate = NULL,
+	
+	## Methods
+	##========
 	
 	fit_initialization = function(Y)##{{{
 	{
 		self$rate = 1. / base::mean(Y)
+	}
+	##}}}
+	
+	),
+	##}}}
+	
+	## Active elements
+	##================{{{
+	active = list(
+	
+	params = function(value)##{{{
+	{
+		if(missing(value))
+		{
+			return( list( rate = private$.rate ) )
+		}
+		else
+		{
+			if(is.numeric(value) && length(value) == 1 )
+			{
+				if( value[1] > 0 )
+					private$.rate = value[1]
+			}
+			
+		}
+	},
+	##}}}
+	
+	rate = function(value)##{{{
+	{
+		if(missing(value))
+		{
+			return(private$.rate)
+		}
+		else
+		{
+			if(value > 0)
+				private$.rate = value
+		}
 	}
 	##}}}
 	
@@ -141,8 +176,6 @@ Exponential = R6::R6Class( "Exponential",
 	
 	## Arguments
 	##==========
-	rate = 1.,
-	
 	
 	## Constructor
 	##============

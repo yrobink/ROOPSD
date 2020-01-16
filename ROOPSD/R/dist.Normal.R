@@ -111,34 +111,87 @@ Normal = R6::R6Class( "Normal",
 	
 	inherit = AbstractDist,
 	
-	## Active elements
-	##================{{{
-	active = list(
-	
-	),
-	##}}}
-	
 	## Private elements
 	##==============={{{
 	private = list(
 	
-	params = function()##{{{
-	{
-		return( list( mean = self$mean , sd = self$sd ) )
-	},
-	##}}}
+	## Arguments
+	##==========
 	
-	set_params = function(params)##{{{
-	{
-		self$mean = params[1]
-		self$sd   = params[2]
-	},
-	##}}}
+	.mean = NULL,
+	.sd   = NULL,
+	
+	## Methods
+	##========
 	
 	fit_initialization = function(Y)##{{{
 	{
 		self$mean = base::mean(Y)
 		self$sd   = stats::sd(Y)
+	},
+	##}}}
+	
+	gradient_negloglikelihood = function( params , Y )##{{{
+	{
+		self$params = params
+		dp = numeric(2)
+		Yc = Y - self$mean
+		dp[1] = - base::sum( Yc / self$sd^2 )
+		dp[2] = length(Y) / self$sd - base::sum( Yc^2 ) / self$sd^3
+		return(dp)
+	}
+	##}}}
+	
+	),
+	##}}}
+	
+	## Active elements
+	##================{{{
+	active = list(
+	
+	params = function(value)##{{{
+	{
+		if(missing(value))
+		{
+			return( list( mean = private$.mean , sd = private$.sd ) )
+		}
+		else
+		{
+			if(is.numeric(value) && length(value) == 2 )
+			{
+				private$.mean = value[1]
+				if( value[2] > 0 )
+					private$.sd   = value[2]
+			}
+			
+		}
+	},
+	##}}}
+	
+	mean = function(value)##{{{
+	{
+		if(missing(value))
+		{
+			return(private$.mean)
+		}
+		else
+		{
+			private$.mean = value
+		}
+	},
+	##}}}
+	
+	sd = function(value)##{{{
+	{
+		if(missing(value))
+		{
+			return(private$.sd)
+		}
+		else
+		{
+			if(value > 0)
+				private$.sd = value
+		}
 	}
 	##}}}
 	
@@ -152,8 +205,6 @@ Normal = R6::R6Class( "Normal",
 	
 	## Arguments
 	##==========
-	mean = 0.,
-	sd   = 1.,
 	
 	
 	## Constructor

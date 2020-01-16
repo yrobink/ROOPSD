@@ -144,17 +144,9 @@ AbstractDist = R6::R6Class( "AbstractDist",
 	## Methods
 	##========
 	
-	params = function()##{{{
-	{},
-	##}}}
-	
-	set_params = function(params)##{{{
-	{},
-	##}}}
-	
 	negloglikelihood = function( params , Y )##{{{
 	{
-		private$set_params(params)
+		self$params = params
 		return(-base::sum(self$logdensity(Y)))
 	},
 	##}}}
@@ -213,7 +205,7 @@ AbstractDist = R6::R6Class( "AbstractDist",
 	
 	rvs = function( n )##{{{
 	{
-		params = private$params()
+		params = self$params
 		params$n = n
 		return(base::do.call( self$rdist , params ))
 	},
@@ -221,7 +213,7 @@ AbstractDist = R6::R6Class( "AbstractDist",
 	
 	density = function(x)##{{{
 	{
-		params = private$params()
+		params = self$params
 		params$x = x
 		return(base::do.call( self$ddist , params ) )
 	},
@@ -229,7 +221,7 @@ AbstractDist = R6::R6Class( "AbstractDist",
 	
 	logdensity = function(x)##{{{
 	{
-		params = private$params()
+		params = self$params
 		params$x = x
 		params$log = TRUE
 		return(base::do.call( self$ddist , params ) )
@@ -238,7 +230,7 @@ AbstractDist = R6::R6Class( "AbstractDist",
 	
 	cdf = function(q)##{{{
 	{
-		params = private$params()
+		params = self$params
 		params$q = q
 		return(base::do.call( self$pdist , params ) )
 	},
@@ -246,7 +238,7 @@ AbstractDist = R6::R6Class( "AbstractDist",
 	
 	sf = function(q)##{{{
 	{
-		params = private$params()
+		params = self$params
 		params$q = q
 		params$lower.tail = FALSE
 		return(base::do.call( self$pdist , params ) )
@@ -255,7 +247,7 @@ AbstractDist = R6::R6Class( "AbstractDist",
 	
 	icdf = function(p)##{{{
 	{
-		params = private$params()
+		params = self$params
 		params$p = p
 		params$lower.tail = TRUE
 		return(base::do.call( self$qdist , params ) )
@@ -264,7 +256,7 @@ AbstractDist = R6::R6Class( "AbstractDist",
 	
 	isf = function(p)##{{{
 	{
-		params = private$params()
+		params = self$params
 		params$p = p
 		params$lower.tail = FALSE
 		return(base::do.call( self$qdist , params ) )
@@ -277,8 +269,8 @@ AbstractDist = R6::R6Class( "AbstractDist",
 	fit = function(Y)##{{{
 	{
 		private$fit_initialization(Y)
-		opt = stats::optim( par = as.vector(private$params()) , fn = private$negloglikelihood , method = "BFGS" , Y = Y )
-		private$set_params(opt$par)
+		opt = stats::optim( par = as.vector(self$params) , fn = private$negloglikelihood , gr = private$gradient_negloglikelihood , method = "BFGS" , Y = Y )
+		self$params = opt$par
 	}
 	##}}}
 	

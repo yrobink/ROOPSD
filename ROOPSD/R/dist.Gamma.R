@@ -115,18 +115,14 @@ Gamma = R6::R6Class( "Gamma",
 	##==============={{{
 	private = list(
 	
-	params = function()##{{{
-	{
-		return( list( shape = self$shape , scale = self$scale ) )
-	},
-	##}}}
+	## Arguments
+	##==========
 	
-	set_params = function(params)##{{{
-	{
-		self$shape = params[1]
-		self$scale = params[2]
-	},
-	##}}}
+	.shape = NULL,
+	.scale = NULL,
+	
+	## Methods
+	##========
 	
 	fit_initialization = function(Y)##{{{
 	{
@@ -140,6 +136,61 @@ Gamma = R6::R6Class( "Gamma",
 	),
 	##}}}
 	
+	## Active elements
+	##================{{{
+	active = list(
+	
+	params = function(value)##{{{
+	{
+		if(missing(value))
+		{
+			return( list( shape = private$.shape , scale = private$.scale ) )
+		}
+		else
+		{
+			if(is.numeric(value) && length(value) == 2 )
+			{
+				if( value[1] > 0 )
+					private$.shape = value[1]
+				if( value[2] > 0 )
+					private$.scale = value[2]
+			}
+			
+		}
+	},
+	##}}}
+	
+	shape = function(value)##{{{
+	{
+		if(missing(value))
+		{
+			return(private$.shape)
+		}
+		else
+		{
+			if(value > 0)
+				private$.shape = value
+		}
+	},
+	##}}}
+	
+	scale = function(value)##{{{
+	{
+		if(missing(value))
+		{
+			return(private$.scale)
+		}
+		else
+		{
+			if(value > 0)
+				private$.scale = value
+		}
+	}
+	##}}}
+	
+	),
+	##}}}
+	
 	## Public elements
 	##============={{{
 	
@@ -147,9 +198,6 @@ Gamma = R6::R6Class( "Gamma",
 	
 	## Arguments
 	##==========
-	shape = 0.,
-	scale = 1.,
-	
 	
 	## Constructor
 	##============
