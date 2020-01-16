@@ -1,4 +1,8 @@
 
+
+*.Rd
+*.swp
+
 .DS_Store
 
 # History files
