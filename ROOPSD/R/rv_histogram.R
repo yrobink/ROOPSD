@@ -123,20 +123,6 @@
 #' }
 #' @examples
 #' ## Realizations of a random variable
-#' X = stats::rnorm( 10000 )
-#'
-#' ## Estimation of random variable
-#' rvX = ARyga::rv_histogram$new(X)
-#' 
-#' ## cdf and sf
-#' x = base::seq( -2 , 2 , 0.001 )
-#' cdfx = rvX$cdf(x)
-#' sfx = rvX$sf(x)
-#'
-#' ## icdf and isf
-#' q = base::seq( 0 , 1 , 0.001 )
-#' icdfq = rvX$icdf(q)
-#' isfq = rvX$isf(q)
 #'
 #' @export
 rv_histogram = R6::R6Class( "rv_histogram" ,
