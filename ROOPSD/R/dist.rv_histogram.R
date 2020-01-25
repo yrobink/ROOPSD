@@ -82,9 +82,9 @@
 ##################################################################################
 ##################################################################################
 
-#' Empirical 
+#' rv_histogram 
 #'
-#' Empirical distribution in OOP way. Use quantile.
+#' rv_histogram distribution in OOP way. Use quantile.
 #'
 #' @docType class
 #' @importFrom R6 R6Class
@@ -106,7 +106,7 @@
 #'
 #' @section Methods:
 #' \describe{
-#'   \item{\code{new()}}{This method is used to create object of this class with \code{Empirical}}
+#'   \item{\code{new()}}{This method is used to create object of this class with \code{rv_histogram}}
 #'   \item{\code{rvs(n)}}{Draw n samples}.
 #'   \item{\code{cdf(q)}}{Cumulative Distribution Function along vector of quantile q}.
 #'   \item{\code{sf(q)}}{Survival function (1-CDF) along vector of quantile q}.
@@ -118,7 +118,7 @@
 #' ##
 #' ##
 #' @export
-Empirical = R6::R6Class( "Empirical" ,
+rv_histogram = R6::R6Class( "rv_histogram" ,
 	
 	public = list(
 	
