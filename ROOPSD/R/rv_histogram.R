@@ -114,7 +114,7 @@
 #'
 #' @section Methods:
 #' \describe{
-#'   \item{\code{new(X,bins)}}{This method is used to create object of this class with \code{rv_histogram}}
+#'   \item{\code{new(X,bins)}}{This method is used to create object of this class with \code{rv_histogram_old}}
 #'   \item{\code{rvs(size)}}{Random values generator from histogram estimated}.
 #'   \item{\code{cdf(X)}}{Cumulative Distribution Function.}.
 #'   \item{\code{icdf(X)}}{Inverse of Cumulative Distribution Function.}.
@@ -125,7 +125,7 @@
 #' ## Realizations of a random variable
 #'
 #' @export
-rv_histogram = R6::R6Class( "rv_histogram" ,
+rv_histogram_old = R6::R6Class( "rv_histogram_old" ,
 	
 	inherit = RPOOstats::rv_abstract,
 	
