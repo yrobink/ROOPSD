@@ -135,8 +135,12 @@ rv_histogram = R6::R6Class( "rv_histogram" ,
 	## Constructor ##
 	#################
 	
-	initialize = function()##{{{
-	{},
+	initialize = function(...)##{{{
+	{
+		kwargs = list(...)
+		if( !is.null(kwargs[["Y"]]) )
+			base::do.call( self$fit , kwargs )
+	},
 	##}}}
 	
 	rvs = function( n )##{{{
