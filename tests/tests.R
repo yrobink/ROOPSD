@@ -90,9 +90,9 @@ base::rm( list = base::ls() )
 
 library(R6)
 library(devtools)
-library(roxygen2)
-library(ggplot2)
-library(gridExtra)
+#library(roxygen2)
+#library(ggplot2)
+#library(gridExtra)
 
 try(roxygen2::roxygenize("../ROOPSD"))
 devtools::load_all("../ROOPSD")
