@@ -2,7 +2,6 @@
 
 *.Rd
 *.swp
-ROOPSD/NAMESPACE
 
 .DS_Store
 
