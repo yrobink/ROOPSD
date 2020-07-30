@@ -133,6 +133,28 @@ rv_histogram = R6::R6Class( "rv_histogram" ,
 	},
 	##}}}
 	
+	## density ##{{{
+	#' @description
+    #' Density function
+    #' @param x Values to compute the density
+    #' @return density
+	density = function( x ) 
+	{
+		return(private$densityfn(x))
+	},
+	##}}}
+	
+	## logdensity ##{{{
+	#' @description
+    #' Log density function
+    #' @param x Values to compute the log-density
+    #' @return the log density
+	logdensity = function( x ) 
+	{
+		return(base::log(private$densityfn(x)))
+	},
+	##}}}
+	
 	## cdf ##{{{
 	#' @description
     #' Cumulative Distribution Function
@@ -174,17 +196,6 @@ rv_histogram = R6::R6Class( "rv_histogram" ,
 	isf = function( p ) 
 	{
 		return(private$icdffn(1. - p))
-	},
-	##}}}
-	
-	## density ##{{{
-	#' @description
-    #' Density function
-    #' @param x Values to compute the density
-    #' @return density
-	density = function( x ) 
-	{
-		return(private$densityfn(x))
 	},
 	##}}}
 	
