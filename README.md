@@ -35,7 +35,7 @@ yoann.robin.k@gmail.com
 
 This software is a computer program that is part of the ROOPSD (R Object
 Oriented Programming for Statistical Distribution). This library makes it
-possible to perform bias to  draw, fit and access to CDF and SF function for
+possible to  draw, fit and access to CDF and SF function for
 for classic statistical distribution.
 
 This software is governed by the CeCILL-C license under French law and
