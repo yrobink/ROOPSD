@@ -86,48 +86,6 @@
 #'
 #' Base class for OOP statistical distribution
 #'
-#' @docType class
-#' @importFrom R6 R6Class
-#'
-#' @param ddist [function]
-#'        Density function, e.g. dnorm
-#' @param pdist [function]
-#'        Distribution function, e.g. pnorm
-#' @param qdist [function]
-#'        Quantile function, e.g. qnorm
-#' @param rdist [function]
-#'        Random generator function, e.g. rnorm
-#' @param freeze [boolean]
-#'        If we freeze or note the distribution. TRUE after fit in general
-#' @param n  [integer]
-#'        For rvs function, number of samples drawn
-#' @param x  [integer]
-#'        For density and logdensity function. Vector of quantiles
-#' @param q  [integer]
-#'        For cdf and sf functions. Vector of quantiles
-#' @param p  [integer]
-#'        For icdf and isf functions. Vector of probabilities
-#' @param Y  [integer]
-#'        For fit function. Dataset to infer parameters. (max likelihood)
-#'
-#' @return Object of \code{\link{R6Class}} with methods to use a statistical distribution.
-#' @format \code{\link{R6Class}} object.
-#'
-#' @section Methods:
-#' \describe{
-#'   \item{\code{new(ddist,pdist,qdist,rdist,freeze)}}{This method is used to create object of this class with \code{AbstractDist}}
-#'   \item{\code{rvs(n)}}{Draw n samples}.
-#'   \item{\code{density(x)}}{Density along vector of quantile x}.
-#'   \item{\code{logdensity(x)}}{log of density along vector of quantile x}.
-#'   \item{\code{cdf(q)}}{Cumulative Distribution Function along vector of quantile q}.
-#'   \item{\code{sf(q)}}{Survival function (1-CDF) along vector of quantile q}.
-#'   \item{\code{icdf(p)}}{Inverse of cdf along vector of probabilities p}.
-#'   \item{\code{isf(p)}}{Inverse of sf along vector of probabilities p}.
-#'   \item{\code{fit(Y)}}{Fit function to infer parameters. By max likelihood}.
-#' }
-#' @examples
-#' ##
-#' ##
 #' @export
 AbstractDist = R6::R6Class( "AbstractDist",
 	
@@ -139,19 +97,22 @@ AbstractDist = R6::R6Class( "AbstractDist",
 	## Arguments
 	##==========
 	
+	#' @field name name of the distribution
 	.name = NULL,
 	
 	## Methods
 	##========
 	
-	negloglikelihood = function( params , Y )##{{{
+	## negloglikelihood ##{{{
+	negloglikelihood = function( params , Y )
 	{
 		self$params = params
 		return(-base::sum(self$logdensity(Y)))
 	},
 	##}}}
 	
-	fit_initialization = function(Y)##{{{
+	## fit_initialization ##{{{
+	fit_initialization = function(Y)
 	{}
 	##}}}
 	
@@ -162,7 +123,10 @@ AbstractDist = R6::R6Class( "AbstractDist",
 	##================{{{
 	active = list(
 	
-	name = function(value) ##{{{
+	## name ##{{{
+	#' @description
+    #' Setter/getter of name, set is protected
+	name = function(value) 
 	{
 		if(base::missing(value))
 		{
@@ -180,22 +144,33 @@ AbstractDist = R6::R6Class( "AbstractDist",
 	
 	## Arguments
 	##==========
+	#' @field ddist density function
 	ddist = NULL,
+	#' @field pdist distribution function
 	pdist = NULL,
+	#' @field qdist quantile function
 	qdist = NULL,
+	#' @field rdist random generator function
 	rdist = NULL,
-	freeze = FALSE,
 	
 	## Constructor
 	##============
 	
-	initialize = function( ddist , pdist , qdist , rdist , name , freeze = FALSE )##{{{
+	## initialize ##{{{
+	#' @description
+    #' Create a new AbstractDist object.
+	#' @param ddist [function] Density function, e.g. dnorm
+	#' @param pdist [function] Distribution function, e.g. pnorm
+	#' @param qdist [function] Quantile function, e.g. qnorm
+	#' @param rdist [function] Random generator function, e.g. rnorm
+	#' @param name  [str]      name of the distribution
+	#' @return A new `AbstractDist` object.
+	initialize = function( ddist , pdist , qdist , rdist , name )
 	{
 		self$ddist = ddist
 		self$pdist = pdist
 		self$qdist = qdist
 		self$rdist = rdist
-		self$freeze = freeze
 		private$.name = name
 	},
 	##}}}
@@ -203,7 +178,12 @@ AbstractDist = R6::R6Class( "AbstractDist",
 	## Methods
 	##========
 	
-	rvs = function( n )##{{{
+	## rvs ##{{{
+	#' @description
+    #' Generation sample from the histogram
+    #' @param n Number of samples drawn
+    #' @return A vector of samples
+	rvs = function( n )
 	{
 		params = self$params
 		params$n = n
@@ -211,7 +191,12 @@ AbstractDist = R6::R6Class( "AbstractDist",
 	},
 	##}}}
 	
-	density = function(x)##{{{
+	## density ##{{{
+	#' @description
+    #' Density function
+    #' @param x Values to compute the density
+    #' @return density
+	density = function(x)
 	{
 		params = self$params
 		params$x = x
@@ -219,7 +204,12 @@ AbstractDist = R6::R6Class( "AbstractDist",
 	},
 	##}}}
 	
-	logdensity = function(x)##{{{
+	## logdensity ##{{{
+	#' @description
+    #' Log density function
+    #' @param x Values to compute the log-density
+    #' @return log of density
+	logdensity = function(x)
 	{
 		params = self$params
 		params$x = x
@@ -228,7 +218,12 @@ AbstractDist = R6::R6Class( "AbstractDist",
 	},
 	##}}}
 	
-	cdf = function(q)##{{{
+	## cdf ##{{{
+	#' @description
+    #' Cumulative Distribution Function
+    #' @param q Quantiles to compute the CDF
+    #' @return cdf values
+	cdf = function(q)
 	{
 		params = self$params
 		params$q = q
@@ -236,7 +231,12 @@ AbstractDist = R6::R6Class( "AbstractDist",
 	},
 	##}}}
 	
-	sf = function(q)##{{{
+	## sf ##{{{
+	#' @description
+    #' Survival Function
+    #' @param q Quantiles to compute the SF
+    #' @return sf values
+	sf = function(q)
 	{
 		params = self$params
 		params$q = q
@@ -245,7 +245,12 @@ AbstractDist = R6::R6Class( "AbstractDist",
 	},
 	##}}}
 	
-	icdf = function(p)##{{{
+	## icdf ##{{{
+	#' @description
+    #' Inverse of Cumulative Distribution Function
+    #' @param p Probabilities to compute the CDF
+    #' @return icdf values
+	icdf = function(p)
 	{
 		params = self$params
 		params$p = p
@@ -254,7 +259,12 @@ AbstractDist = R6::R6Class( "AbstractDist",
 	},
 	##}}}
 	
-	isf = function(p)##{{{
+	## isf ##{{{
+	#' @description
+    #' Inverse of Survival Function
+    #' @param p Probabilities to compute the SF
+    #' @return isf values
+	isf = function(p)
 	{
 		params = self$params
 		params$p = p
@@ -266,11 +276,18 @@ AbstractDist = R6::R6Class( "AbstractDist",
 	## Fit
 	##====
 	
-	fit = function(Y)##{{{
+	## fit ##{{{
+	#' @description
+    #' Fit method
+    #' @param Y Dataset to infer the histogram
+    #' @return `self`
+	fit = function(Y)
 	{
 		private$fit_initialization(Y)
 		opt = stats::optim( par = as.vector(self$params) , fn = private$negloglikelihood , gr = private$gradient_negloglikelihood , method = "BFGS" , Y = Y )
 		self$params = opt$par
+		
+		return(self)
 	}
 	##}}}
 	
