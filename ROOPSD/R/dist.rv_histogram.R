@@ -85,6 +85,8 @@
 #' rv_histogram 
 #'
 #' rv_histogram distribution in OOP way. Use quantile.
+#'
+#' @export
 rv_histogram = R6::R6Class( "rv_histogram" ,
 	
 	public = list(
