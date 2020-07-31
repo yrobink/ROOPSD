@@ -108,5 +108,9 @@ rorthogonal_group = function( d , n = 1 )
 		R  = base::diag( R / base::abs(R) )
 		rot[,,i] = Q %*% R
 	}
+	
+	if( n == 1 )
+		rot = matrix( rot , nrow = d , ncol = d )
+	
 	return(rot)
 }
