@@ -120,8 +120,8 @@ Uniform = R6::R6Class( "Uniform",
 	{
 		self$params = params
 		dp = numeric(2)
-		dp[1] = length(Y) / (self$max - self$min)
-		dp[2] = - length(Y) / (self$max - self$min)
+		dp[1] = - length(Y) / (self$max - self$min)
+		dp[2] = length(Y) / (self$max - self$min)
 		return(dp)
 	}
 	##}}}
