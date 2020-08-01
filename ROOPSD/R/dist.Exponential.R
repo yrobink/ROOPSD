@@ -178,7 +178,7 @@ Exponential = R6::R6Class( "Exponential",
 	#' @return A new `Exponential` object.
 	initialize = function( rate = 1. )
 	{
-		super$initialize( stats::dexp , stats::pexp , stats::qexp , stats::rexp , "Exponential" )
+		super$initialize( stats::dexp , stats::pexp , stats::qexp , stats::rexp , "Exponential" , TRUE )
 		self$rate = rate
 	}
 	##}}}

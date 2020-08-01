@@ -212,7 +212,7 @@ Normal = R6::R6Class( "Normal",
 	#' @return A new `Normal` object.
 	initialize = function( mean = 0 , sd = 1 )
 	{
-		super$initialize( stats::dnorm , stats::pnorm , stats::qnorm , stats::rnorm , "Normal" )
+		super$initialize( stats::dnorm , stats::pnorm , stats::qnorm , stats::rnorm , "Normal" , TRUE )
 		self$mean = mean
 		self$sd   = sd
 	}

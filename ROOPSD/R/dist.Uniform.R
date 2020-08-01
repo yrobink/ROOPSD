@@ -209,7 +209,7 @@ Uniform = R6::R6Class( "Uniform",
 	#' @return A new `Uniform` object.
 	initialize = function( min = 0 , max = 1 )
 	{
-		super$initialize( stats::dunif , stats::punif , stats::qunif , stats::runif , "Uniform" )
+		super$initialize( stats::dunif , stats::punif , stats::qunif , stats::runif , "Uniform" , TRUE )
 		self$min = min
 		self$max = max
 	}

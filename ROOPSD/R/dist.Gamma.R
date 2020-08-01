@@ -203,7 +203,7 @@ Gamma = R6::R6Class( "Gamma",
 	#' @return A new `Gamma` object.
 	initialize = function( shape = 0.5 , scale = 1 )
 	{
-		super$initialize( stats::dgamma , stats::pgamma , stats::qgamma , stats::rgamma , "Gamma" )
+		super$initialize( stats::dgamma , stats::pgamma , stats::qgamma , stats::rgamma , "Gamma" , TRUE )
 		self$shape = shape
 		self$scale = scale
 	}

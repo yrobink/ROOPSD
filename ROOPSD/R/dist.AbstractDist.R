@@ -99,6 +99,7 @@ AbstractDist = R6::R6Class( "AbstractDist",
 	
 	#' @field name name of the distribution
 	.name = NULL,
+	.has_gr_nlll = FALSE,
 	
 	## Methods
 	##========
@@ -164,14 +165,17 @@ AbstractDist = R6::R6Class( "AbstractDist",
 	#' @param qdist [function] Quantile function, e.g. qnorm
 	#' @param rdist [function] Random generator function, e.g. rnorm
 	#' @param name  [str]      name of the distribution
+	#' @param has_gr_nlll [bool] If the derived class has defined the gradient
+	#'                           of the negative log-likelihood
 	#' @return A new `AbstractDist` object.
-	initialize = function( ddist , pdist , qdist , rdist , name )
+	initialize = function( ddist , pdist , qdist , rdist , name , has_gr_nlll )
 	{
 		self$ddist = ddist
 		self$pdist = pdist
 		self$qdist = qdist
 		self$rdist = rdist
 		private$.name = name
+		private$.has_gr_nlll = has_gr_nlll
 	},
 	##}}}
 	
@@ -284,7 +288,10 @@ AbstractDist = R6::R6Class( "AbstractDist",
 	fit = function(Y)
 	{
 		private$fit_initialization(Y)
-		opt = stats::optim( par = as.vector(self$params) , fn = private$negloglikelihood , gr = private$gradient_negloglikelihood , method = "BFGS" , Y = Y )
+		if( private$.has_gr_nlll )
+			opt = stats::optim( par = as.vector(self$params) , fn = private$negloglikelihood , method = "BFGS" , Y = Y , gr = private$gradient_negloglikelihood )
+		else
+			opt = stats::optim( par = as.vector(self$params) , fn = private$negloglikelihood , method = "BFGS" , Y = Y )
 		self$params = opt$par
 		
 		return(self)
