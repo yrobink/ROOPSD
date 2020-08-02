@@ -8,5 +8,5 @@ Depends: R (>= 3.3.3)
 License: CeCILL-2
 Encoding: UTF-8
 LazyData: true
-Imports: methods, R6
+Imports: methods, R6, Lmoments
 RoxygenNote: 7.1.1
