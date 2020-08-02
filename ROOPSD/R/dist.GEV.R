@@ -81,3 +81,165 @@
 ##                                                                            ##
 ################################################################################
 ################################################################################
+
+
+#' GEV 
+#'
+#' GEV distribution in OOP way. Based on AbstractDist
+#'
+#' @export
+GEV = R6::R6Class( "GEV",
+	
+	inherit = AbstractDist,
+	
+	## Private elements
+	##==============={{{
+	private = list(
+	
+	## Arguments
+	##==========
+	
+	#' @field loc location of the GEV law
+	.loc = NULL,
+	#' @field scale scale of the GEV law
+	.scale = NULL,
+	#' @field shape shape of the GEV law
+	.shape = NULL,
+	#' @field params params of the normal law
+	.params = NULL,
+	
+	## Methods
+	##========
+	
+	fit_initialization = function(Y)##{{{
+	{
+		lmom = Lmoments::Lmoments(Y)
+		
+		tau3  = lmom[3] / lmom[2]
+		co    = 2. / ( 3. + tau3 ) - base::log(2) / base::log(3)
+		kappa = 7.8590 * co + 2.9554 * co^2
+		g     = base::gamma( 1. + kappa )
+		
+		
+		self$scale = lmom[2] * kappa / ( (1 - 2^( - kappa )) * g )
+		self$loc   = lmom[1] - self$scale * (1 - g) / kappa
+		self$shape = - kappa
+	}
+	##}}}
+	
+	),
+	##}}}
+	
+	## Active elements
+	##================{{{
+	active = list(
+	
+	## params ##{{{
+	#' @description
+    #' Setter/getter of params
+	params = function(value)
+	{
+		if(missing(value))
+		{
+			return( list( loc = private$.loc , scale = private$.scale , shape = private$.shape ) )
+		}
+		else
+		{
+			if(is.numeric(value) && length(value) == 3 )
+			{
+				private$.loc = value[1]
+				if( value[2] > 0 )
+					private$.scale = value[2]
+				private$.shape = value[3]
+			}
+			
+		}
+	},
+	##}}}
+	
+	## loc ##{{{
+	#' @description
+    #' Setter/getter of loc
+	loc = function(value)
+	{
+		if(missing(value))
+		{
+			return(private$.loc)
+		}
+		else
+		{
+			private$.loc = value
+		}
+	},
+	##}}}
+	
+	## scale ##{{{
+	#' @description
+    #' Setter/getter of scale
+	scale = function(value)
+	{
+		if(missing(value))
+		{
+			return(private$.scale)
+		}
+		else
+		{
+			if(value > 0)
+				private$.scale = value
+		}
+	},
+	##}}}
+	
+	## shape ##{{{
+	#' @description
+    #' Setter/getter of shape
+	shape = function(value)
+	{
+		if(missing(value))
+		{
+			return(private$.shape)
+		}
+		else
+		{
+			private$.shape = value
+		}
+	}
+	##}}}
+	
+	
+	),
+	##}}}
+	
+	## Public elements
+	##============={{{
+	
+	public = list(
+	
+	## Arguments
+	##==========
+	
+	## Constructor
+	##============
+	
+	## initialize ##{{{
+	#' @description
+    #' Create a new GEV object.
+	#' @param loc   [double] location parameter
+	#' @param scale [double] scale parameter
+	#' @param shape [double] shape parameter
+	#' @return A new `GEV` object.
+	initialize = function( loc = 0 , scale = 1 , shape = -0.1 )
+	{
+		super$initialize( stats::dgev , stats::pgev , stats::qgev , stats::rgev , "GEV" , FALSE )
+		self$loc   = loc
+		self$scale = scale
+		self$shape = shape
+	}
+	##}}}
+	
+	)
+	##}}}
+	
+)
+
+

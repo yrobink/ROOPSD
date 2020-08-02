@@ -2,6 +2,7 @@
 
 export(AbstractDist)
 export(Exponential)
+export(GEV)
 export(Gamma)
 export(Normal)
 export(Uniform)
