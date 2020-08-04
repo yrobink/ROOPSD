@@ -2,6 +2,7 @@
 
 *.Rd
 *.swp
+*.pdf
 
 .DS_Store
 

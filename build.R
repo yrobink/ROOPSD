@@ -131,6 +131,7 @@ if( build )
 	roxygen2::roxygenize("ROOPSD")
 	if( verbose ) cat( "Final build" )
 	roopsd = devtools::build("ROOPSD")
+	devtools::build_manual("ROOPSD")
 }
 
 
