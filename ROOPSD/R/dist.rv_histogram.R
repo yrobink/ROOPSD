@@ -84,7 +84,11 @@
 
 #' rv_histogram 
 #'
-#' rv_histogram distribution in OOP way. Use quantile.
+#' @description
+#' rv_histogram distribution in OOP way.
+#'
+#' @details
+#' Use quantile to fit the histogram
 #'
 #' @examples
 #' ## Generate sample
@@ -105,11 +109,11 @@ rv_histogram = R6::R6Class( "rv_histogram" ,
 	## Arguments ##
 	###############
 	
-	#' @field min min value for the estimation
+	#' @field min [double] min value for the estimation
 	min   = NULL,
-	#' @field max max value for the estimation
+	#' @field max [double] max value for the estimation
 	max   = NULL,
-	#' @field tol numerical tolerance
+	#' @field tol [double] numerical tolerance
 	tol = 1e-2,
 	
 	#################
@@ -119,7 +123,7 @@ rv_histogram = R6::R6Class( "rv_histogram" ,
 	## initialize ##{{{
 	#' @description
     #' Create a new rv_histogram object.
-    #' @param ... If a param `Y`is given, the fit method is called with `...`.
+    #' @param ... If a param `Y` is given, the fit method is called with `...`.
     #' @return A new `rv_histogram` object.
 	initialize = function(...)
 	{
@@ -132,7 +136,7 @@ rv_histogram = R6::R6Class( "rv_histogram" ,
 	## rvs ##{{{
 	#' @description
     #' Generation sample from the histogram
-    #' @param n Number of samples drawn
+    #' @param n [integer] Number of samples drawn
     #' @return A vector of samples
 	rvs = function( n )
 	{
@@ -144,7 +148,7 @@ rv_histogram = R6::R6Class( "rv_histogram" ,
 	## density ##{{{
 	#' @description
     #' Density function
-    #' @param x Values to compute the density
+    #' @param x [vector] Values to compute the density
     #' @return density
 	density = function( x ) 
 	{
@@ -155,7 +159,7 @@ rv_histogram = R6::R6Class( "rv_histogram" ,
 	## logdensity ##{{{
 	#' @description
     #' Log density function
-    #' @param x Values to compute the log-density
+    #' @param x [vector] Values to compute the log-density
     #' @return the log density
 	logdensity = function( x ) 
 	{
@@ -166,7 +170,7 @@ rv_histogram = R6::R6Class( "rv_histogram" ,
 	## cdf ##{{{
 	#' @description
     #' Cumulative Distribution Function
-    #' @param q Quantiles to compute the CDF
+    #' @param q [vector] Quantiles to compute the CDF
     #' @return cdf values
 	cdf = function( q )
 	{
@@ -177,7 +181,7 @@ rv_histogram = R6::R6Class( "rv_histogram" ,
 	## icdf ##{{{
 	#' @description
     #' Inverse of Cumulative Distribution Function
-    #' @param p Probabilities to compute the CDF
+    #' @param p [vector] Probabilities to compute the CDF
     #' @return icdf values
 	icdf = function( p )
 	{
@@ -188,7 +192,7 @@ rv_histogram = R6::R6Class( "rv_histogram" ,
 	## sf ##{{{
 	#' @description
     #' Survival Function
-    #' @param q Quantiles to compute the SF
+    #' @param q [vector] Quantiles to compute the SF
     #' @return sf values
 	sf = function( q ) 
 	{
@@ -199,7 +203,7 @@ rv_histogram = R6::R6Class( "rv_histogram" ,
 	## isf ##{{{
 	#' @description
     #' Inverse of Survival Function
-    #' @param p Probabilities to compute the SF
+    #' @param p [vector] Probabilities to compute the SF
     #' @return isf values
 	isf = function( p ) 
 	{
@@ -210,8 +214,8 @@ rv_histogram = R6::R6Class( "rv_histogram" ,
 	## fit ##{{{
 	#' @description
     #' Fit method for the histograms
-    #' @param Y Dataset to infer the histogram
-    #' @param bins bins values, can be a vector or an integer
+    #' @param Y [vector] Dataset to infer the histogram
+    #' @param bins [vector or integer] bins values
     #' @return `self`
 	fit = function( Y , bins = as.integer(100) )
 	{

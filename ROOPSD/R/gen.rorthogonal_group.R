@@ -84,12 +84,10 @@
 
 #' rorthogonal_group
 #'
-#' Generate sample from a the orthogonal group O(d)
+#' Generate sample from the orthogonal group O(d)
 #'
-#' @param d [integer]
-#'        Dimension of the matrix
-#' @param n [integer]
-#'        numbers of samples drawn
+#' @param d [integer] Dimension of the matrix
+#' @param n [integer] numbers of samples drawn
 #'        
 #' @return [array or matrix], dim = d * d * n or d * d if n == 1
 #'

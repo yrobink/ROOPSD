@@ -85,7 +85,11 @@
 
 #' GEV 
 #'
+#' @description
 #' GEV distribution in OOP way. Based on AbstractDist
+#'
+#' @details
+#' See AbstractDist for generic methods
 #'
 #' @examples
 #' ## Generate sample
@@ -110,13 +114,13 @@ GEV = R6::R6Class( "GEV",
 	## Arguments
 	##==========
 	
-	#' @field loc location of the GEV law
+	#' @field loc [double] location of the GEV law
 	.loc = NULL,
-	#' @field scale scale of the GEV law
+	#' @field scale [double] scale of the GEV law
 	.scale = NULL,
-	#' @field shape shape of the GEV law
+	#' @field shape [double] shape of the GEV law
 	.shape = NULL,
-	#' @field params params of the normal law
+	#' @field params [vector] params of the GEV law
 	.params = NULL,
 	
 	## Methods
@@ -175,8 +179,6 @@ GEV = R6::R6Class( "GEV",
 	active = list(
 	
 	## params ##{{{
-	#' @description
-    #' Setter/getter of params
 	params = function(value)
 	{
 		if(missing(value))
@@ -198,8 +200,6 @@ GEV = R6::R6Class( "GEV",
 	##}}}
 	
 	## loc ##{{{
-	#' @description
-    #' Setter/getter of loc
 	loc = function(value)
 	{
 		if(missing(value))
@@ -214,8 +214,6 @@ GEV = R6::R6Class( "GEV",
 	##}}}
 	
 	## scale ##{{{
-	#' @description
-    #' Setter/getter of scale
 	scale = function(value)
 	{
 		if(missing(value))
@@ -231,8 +229,6 @@ GEV = R6::R6Class( "GEV",
 	##}}}
 	
 	## shape ##{{{
-	#' @description
-    #' Setter/getter of shape
 	shape = function(value)
 	{
 		if(missing(value))

@@ -84,7 +84,11 @@
 
 #' Gamma 
 #'
+#' @description
 #' Gamma distribution in OOP way. Based on AbstractDist
+#'
+#' @details
+#' See AbstractDist for generic methods
 #'
 #' @examples
 #' ## Generate sample
@@ -108,11 +112,11 @@ Gamma = R6::R6Class( "Gamma",
 	## Arguments
 	##==========
 	
-	#' @field shape shape of the gamma law
+	#' @field shape [double] shape of the gamma law
 	.shape = NULL,
-	#' @field scale scale of the gamma law
+	#' @field scale [double] scale of the gamma law
 	.scale = NULL,
-	#' @field params params of the normal law
+	#' @field params [vector] params of the gamma law
 	.params = NULL,
 	
 	## Methods
@@ -146,8 +150,6 @@ Gamma = R6::R6Class( "Gamma",
 	active = list(
 	
 	## params ##{{{
-	#' @description
-    #' Setter/getter of params
 	params = function(value)
 	{
 		if(missing(value))
@@ -169,8 +171,6 @@ Gamma = R6::R6Class( "Gamma",
 	##}}}
 	
 	## shape ##{{{
-	#' @description
-    #' Setter/getter of shape
 	shape = function(value)
 	{
 		if(missing(value))
@@ -186,8 +186,6 @@ Gamma = R6::R6Class( "Gamma",
 	##}}}
 	
 	## scale ##{{{
-	#' @description
-    #' Setter/getter of scale
 	scale = function(value)
 	{
 		if(missing(value))

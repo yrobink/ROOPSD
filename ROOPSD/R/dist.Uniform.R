@@ -84,7 +84,11 @@
 
 #' Uniform 
 #'
+#' @description
 #' Uniform distribution in OOP way. Based on AbstractDist
+#'
+#' @details
+#' See AbstractDist for generic methods
 #'
 #' @examples
 #' ## Generate sample
@@ -108,11 +112,11 @@ Uniform = R6::R6Class( "Uniform",
 	## Arguments
 	##==========
 	
-	#' @field min min of the uniform law
+	#' @field min [double] min of the uniform law
 	.min = NULL,
-	#' @field max max of the uniform law
+	#' @field max [double] max of the uniform law
 	.max = NULL,
-	#' @field params params of the normal law
+	#' @field params [vector] params of the uniform law
 	.params = NULL,
 	
 	
@@ -144,8 +148,6 @@ Uniform = R6::R6Class( "Uniform",
 	active = list(
 	
 	## params ##{{{
-	#' @description
-    #' Setter/getter of params
 	params = function(value)
 	{
 		if(missing(value))
@@ -173,8 +175,6 @@ Uniform = R6::R6Class( "Uniform",
 	##}}}
 	
 	## min ##{{{
-	#' @description
-    #' Setter/getter of min
 	min = function(value)
 	{
 		if(missing(value))
@@ -189,8 +189,6 @@ Uniform = R6::R6Class( "Uniform",
 	##}}}
 	
 	## max ##{{{
-	#' @description
-    #' Setter/getter of max
 	max = function(value)
 	{
 		if(missing(value))

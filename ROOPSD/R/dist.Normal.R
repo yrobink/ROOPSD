@@ -84,7 +84,11 @@
 
 #' Normal 
 #'
+#' @description
 #' Normal distribution in OOP way. Based on AbstractDist
+#'
+#' @details
+#' See AbstractDist for generic methods
 #'
 #' @examples
 #' ## Generate sample
@@ -108,11 +112,11 @@ Normal = R6::R6Class( "Normal",
 	## Arguments
 	##==========
 	
-	#' @field mean mean of the normal law
+	#' @field mean [double] mean of the normal law
 	.mean = NULL,
-	#' @field sd standard deviation of the normal law
+	#' @field sd [double] standard deviation of the normal law
 	.sd   = NULL,
-	#' @field params params of the normal law
+	#' @field params [vector] params of the normal law
 	.params = NULL,
 	
 	
@@ -145,8 +149,6 @@ Normal = R6::R6Class( "Normal",
 	active = list(
 	
 	## params ##{{{
-	#' @description
-    #' Setter/getter of params
 	params = function(value)
 	{
 		if(missing(value))
@@ -167,8 +169,6 @@ Normal = R6::R6Class( "Normal",
 	##}}}
 	
 	## mean ##{{{
-	#' @description
-    #' Setter/getter of mean
 	mean = function(value)
 	{
 		if(missing(value))
@@ -183,8 +183,6 @@ Normal = R6::R6Class( "Normal",
 	##}}}
 	
 	## sd ##{{{
-	#' @description
-    #' Setter/getter of sd
 	sd = function(value)
 	{
 		if(missing(value))

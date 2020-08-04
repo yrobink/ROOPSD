@@ -84,7 +84,11 @@
 
 #' Exponential 
 #'
+#' @description
 #' Exponential distribution in OOP way. Based on AbstractDist
+#'
+#' @details
+#' See AbstractDist for generic methods
 #'
 #' @examples
 #' ## Generate sample
@@ -107,9 +111,9 @@ Exponential = R6::R6Class( "Exponential",
 	## Arguments
 	##==========
 	
-	#' @field rate rate of the exponential law
+	#' @field rate [double] rate of the exponential law
 	.rate = NULL,
-	#' @field params params of the normal law
+	#' @field params [vector] params of the exponential law
 	.params = NULL,
 	
 	## Methods
@@ -137,8 +141,6 @@ Exponential = R6::R6Class( "Exponential",
 	active = list(
 	
 	## params ##{{{
-	#' @description
-    #' Setter/getter of params
 	params = function(value)
 	{
 		if(missing(value))
@@ -158,8 +160,6 @@ Exponential = R6::R6Class( "Exponential",
 	##}}}
 	
 	## rate ##{{{
-	#' @description
-    #' Setter/getter of rate
 	rate = function(value)
 	{
 		if(missing(value))

@@ -86,14 +86,10 @@
 #'
 #' Generate a random symetric positive definite matrix
 #'
-#' @param d [integer]
-#'        Dimension of the matrix
-#' @param n [integer]
-#'        numbers of samples drawn
-#' @param sort_eigenvalues [bool]
-#'        If eigen values (i.e. variance) are sorted
-#' @param gen [function]
-#'        Eigenvalues generator
+#' @param d [integer] Dimension of the matrix
+#' @param n [integer] numbers of samples drawn
+#' @param sort_eigenvalues [bool] If eigen values (i.e. variance) are sorted
+#' @param gen [function] Eigenvalues generator
 #'        
 #' @return [array or matrix], dim = d * d * n or d * d if n == 1
 #'

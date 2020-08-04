@@ -85,7 +85,11 @@
 
 #' GPD 
 #'
+#' @description
 #' GPD distribution in OOP way. Based on AbstractDist
+#'
+#' @details
+#' See AbstractDist for generic methods
 #'
 #' @examples
 #' ## Generate sample
@@ -110,13 +114,13 @@ GPD = R6::R6Class( "GPD",
 	## Arguments
 	##==========
 	
-	#' @field loc location of the GPD law, fixed
+	#' @field loc [double] location of the GPD law, fixed
 	.loc = NULL,
-	#' @field scale scale of the GPD law
+	#' @field scale [double] scale of the GPD law
 	.scale = NULL,
-	#' @field shape shape of the GPD law
+	#' @field shape [double] shape of the GPD law
 	.shape = NULL,
-	#' @field params params of the normal law
+	#' @field params [vector] params of the GPD law
 	.params = NULL,
 	
 	## Methods
@@ -163,8 +167,6 @@ GPD = R6::R6Class( "GPD",
 	active = list(
 	
 	## params ##{{{
-	#' @description
-    #' Setter/getter of params
 	params = function(value)
 	{
 		if(missing(value))
@@ -185,8 +187,6 @@ GPD = R6::R6Class( "GPD",
 	##}}}
 	
 	## loc ##{{{
-	#' @description
-    #' Setter/getter of loc
 	loc = function(value)
 	{
 		if(missing(value))
@@ -201,8 +201,6 @@ GPD = R6::R6Class( "GPD",
 	##}}}
 	
 	## scale ##{{{
-	#' @description
-    #' Setter/getter of scale
 	scale = function(value)
 	{
 		if(missing(value))
@@ -218,8 +216,6 @@ GPD = R6::R6Class( "GPD",
 	##}}}
 	
 	## shape ##{{{
-	#' @description
-    #' Setter/getter of shape
 	shape = function(value)
 	{
 		if(missing(value))
@@ -270,8 +266,8 @@ GPD = R6::R6Class( "GPD",
 	## fit ##{{{
 	#' @description
     #' Fit method
-    #' @param Y Dataset to infer the histogram
-    #' @param loc location parameter
+    #' @param Y [vector] Dataset to infer the histogram
+    #' @param loc [double] location parameter, if NULL used min(Y)
     #' @return `self`
 	fit = function( Y , loc = NULL )
 	{

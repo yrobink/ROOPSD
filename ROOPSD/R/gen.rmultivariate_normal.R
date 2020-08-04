@@ -86,12 +86,9 @@
 #'
 #' Generate sample from a multivariate normal distribution
 #'
-#' @param n [integer]
-#'        numbers of samples drawn
-#' @param mean [vector]
-#'        mean of Normal law
-#' @param cov [matrix]
-#'        covariance matrix
+#' @param n [integer] numbers of samples drawn
+#' @param mean [vector] mean of Normal law
+#' @param cov [matrix] covariance matrix
 #'        
 #' @return [matrix]
 #'

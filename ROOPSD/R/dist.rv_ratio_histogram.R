@@ -84,7 +84,10 @@
 
 #' rv_ratio_histogram 
 #'
-#' rv_ratio_histogram distribution in OOP way. Use quantile. 
+#' @description
+#' rv_ratio_histogram distribution in OOP way.
+#'
+#' @details
 #' Fit separatly P( X < x | X > 0 ) and P(X=0)
 #'
 #' @examples
@@ -133,7 +136,7 @@ rv_ratio_histogram = R6::R6Class( "rv_ratio_histogram" ,
 	## rvs ##{{{
 	#' @description
     #' Generation sample from the histogram
-    #' @param n Number of samples drawn
+    #' @param n [integer] Number of samples drawn
     #' @return A vector of samples
 	rvs = function( n )
 	{
@@ -145,7 +148,7 @@ rv_ratio_histogram = R6::R6Class( "rv_ratio_histogram" ,
 	## cdf ##{{{
 	#' @description
     #' Cumulative Distribution Function
-    #' @param q Quantiles to compute the CDF
+    #' @param q [vector] Quantiles to compute the CDF
     #' @return cdf values
 	cdf = function( q )
 	{
@@ -161,7 +164,7 @@ rv_ratio_histogram = R6::R6Class( "rv_ratio_histogram" ,
 	## icdf ##{{{
 	#' @description
     #' Inverse of Cumulative Distribution Function
-    #' @param p Probabilities to compute the CDF
+    #' @param p [vector] Probabilities to compute the CDF
     #' @return icdf values
 	icdf = function( p )
 	{
@@ -177,7 +180,7 @@ rv_ratio_histogram = R6::R6Class( "rv_ratio_histogram" ,
 	## sf ##{{{
 	#' @description
     #' Survival Function
-    #' @param q Quantiles to compute the SF
+    #' @param q [vector] Quantiles to compute the SF
     #' @return sf values
 	sf = function( q ) 
 	{
@@ -188,7 +191,7 @@ rv_ratio_histogram = R6::R6Class( "rv_ratio_histogram" ,
 	## isf ##{{{
 	#' @description
     #' Inverse of Survival Function
-    #' @param p Probabilities to compute the SF
+    #' @param p [vector] Probabilities to compute the SF
     #' @return isf values
 	isf = function( p ) 
 	{
@@ -199,9 +202,9 @@ rv_ratio_histogram = R6::R6Class( "rv_ratio_histogram" ,
 	## fit ##{{{
 	#' @description
     #' Fit method for the histograms
-    #' @param Y Dataset to infer the histogram
-    #' @param x0 Location of mass point
-    #' @param bins bins values, can be a vector or an integer
+    #' @param Y [vector] Dataset to infer the histogram
+    #' @param x0 [double] Location of mass point
+    #' @param bins [vector or integer] bins values
     #' @return `self`
 	fit = function( Y , x0 , bins = as.integer(100) )
 	{
