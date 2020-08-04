@@ -2,11 +2,18 @@
 
 ## Features
 
+- Statistical distribution in OOP way
+- Histogram random variable in OOP way
+- Multivariate normal generator
+- Orthogonal matrix generator
+- Symmetric positive definite matrix generator
+
+
 ## R instruction
 
 Requires:
-- R
-- roxygen2
+- R (>= 3.3)
+- roxygen2 (>= 7.0.0)
 - devtools
 - methods
 - R6
@@ -16,8 +23,6 @@ Just run:
 Rscript build.R -c -v -i
 ```
 
-
-## Examples
 
 ## License
 
