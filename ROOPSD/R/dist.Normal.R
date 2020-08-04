@@ -86,6 +86,16 @@
 #'
 #' Normal distribution in OOP way. Based on AbstractDist
 #'
+#' @examples
+#' ## Generate sample
+#' mean  = 1
+#' sd    = 0.5
+#' norml = ROOPSD::Normal$new( mean = mean , sd = sd )
+#' X     = norml$rvs( n = 1000 )
+#'
+#' ## And fit parameters
+#' norml$fit(X)
+#'
 #' @export
 Normal = R6::R6Class( "Normal",
 	

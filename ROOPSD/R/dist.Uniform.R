@@ -86,6 +86,16 @@
 #'
 #' Uniform distribution in OOP way. Based on AbstractDist
 #'
+#' @examples
+#' ## Generate sample
+#' min = -1
+#' max = 1
+#' unifl = ROOPSD::Uniform$new( min = min , max = max )
+#' X     = unifl$rvs( n = 1000 )
+#'
+#' ## And fit parameters
+#' unifl$fit(X)
+#'
 #' @export
 Uniform = R6::R6Class( "Uniform",
 	

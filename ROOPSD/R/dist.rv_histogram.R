@@ -86,6 +86,16 @@
 #'
 #' rv_histogram distribution in OOP way. Use quantile.
 #'
+#' @examples
+#' ## Generate sample
+#' X = numeric(10000)
+#' X[1:5000] = stats::rnorm( n = 5000 , mean = 2 , sd = 1 )
+#' X[5000:10000] = stats::rexp( n = 5000 , rate = 1 )
+#'
+#' ## And fit it
+#' rvX = rv_histogram$new()
+#' rvX$fit(X)
+#'
 #' @export
 rv_histogram = R6::R6Class( "rv_histogram" ,
 	
