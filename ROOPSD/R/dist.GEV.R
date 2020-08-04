@@ -159,9 +159,9 @@ GEV = R6::R6Class( "GEV",
 			return(dp)
 		
 		## Gradient
-		dp[1] = base::mean( ( Zamsi - 1 - shape ) / ( self$scale * Za1 ) )
-		dp[2] = base::mean( ( 1. + Z * ( Zamsi - 1 - shape ) / Za1 ) / self$scale )
-		dp[3] = base::mean( ( ( Zamsi - 1. ) * base::log(Za1) * ishape**2 + ( 1. + ishape - ishape * Zamsi ) * Z / Za1 ) )
+		dp[1] = base::sum( ( Zamsi - 1 - shape ) / ( self$scale * Za1 ) )
+		dp[2] = base::sum( ( 1. + Z * ( Zamsi - 1 - shape ) / Za1 ) / self$scale )
+		dp[3] = base::sum( ( ( Zamsi - 1. ) * base::log(Za1) * ishape**2 + ( 1. + ishape - ishape * Zamsi ) * Z / Za1 ) )
 		
 		return(dp)
 	}

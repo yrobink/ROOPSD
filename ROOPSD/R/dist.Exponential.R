@@ -124,7 +124,7 @@ Exponential = R6::R6Class( "Exponential",
 	gradient_negloglikelihood = function( params , Y )##{{{
 	{
 		self$params = params
-		dp = base::mean(self$rate - Y * self$scale^2)
+		dp = base::sum(self$rate - Y * self$scale^2)
 		return(dp)
 	}
 	##}}}
