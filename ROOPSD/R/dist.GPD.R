@@ -149,8 +149,8 @@ GPD = R6::R6Class( "GPD",
 		
 		## Gradient
 		dp    = base::c(NA,NA)
-		dp[1] = - exponent * shape * Z / ZZ / self$scale + 1. / self$scale
-		dp[2] = - base::log(ZZ) / shape^2 + exponent * Z / ZZ
+		dp[1] = base::sum( - exponent * shape * Z / ZZ / self$scale + 1. / self$scale )
+		dp[2] = base::sum( - base::log(ZZ) / shape^2 + exponent * Z / ZZ )
 		return(dp)
 	}
 	##}}}
@@ -273,9 +273,11 @@ GPD = R6::R6Class( "GPD",
     #' @param Y Dataset to infer the histogram
     #' @param loc location parameter
     #' @return `self`
-	fit = function( Y , loc )
+	fit = function( Y , loc = NULL )
 	{
 		self$loc = loc
+		if( is.null(self$loc) )
+			self$loc = base::min(Y)
 		
 		return(super$fit(Y))
 	}
