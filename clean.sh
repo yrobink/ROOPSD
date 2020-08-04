@@ -85,10 +85,5 @@
 
 
 ## Delete R temporary files
-rm -f ROOPSD/NAMESPACE
 rm -f ROOPSD/man/*.Rd
-rm -f ROOPSD/R/RcppExports.R
-rm -f ROOPSD/src/*.so
-rm -f ROOPSD/src/*.o
-rm -f ROOPSD/src/RcppExports.cpp
 rm -f *.tar.gz
