@@ -84,8 +84,11 @@
 
 #' AbstractDist 
 #'
+#' @description
 #' Base class for OOP statistical distribution
 #'
+#' @details
+#' This class is only used to be herited
 #' @export
 AbstractDist = R6::R6Class( "AbstractDist",
 	
@@ -97,7 +100,7 @@ AbstractDist = R6::R6Class( "AbstractDist",
 	## Arguments
 	##==========
 	
-	#' @field name name of the distribution
+	#' @field name [string] name of the distribution
 	.name = NULL,
 	.has_gr_nlll = FALSE,
 	
@@ -125,8 +128,6 @@ AbstractDist = R6::R6Class( "AbstractDist",
 	active = list(
 	
 	## name ##{{{
-	#' @description
-    #' Setter/getter of name, set is protected
 	name = function(value) 
 	{
 		if(base::missing(value))
@@ -145,13 +146,13 @@ AbstractDist = R6::R6Class( "AbstractDist",
 	
 	## Arguments
 	##==========
-	#' @field ddist density function
+	#' @field ddist [function] density function
 	ddist = NULL,
-	#' @field pdist distribution function
+	#' @field pdist [function] distribution function
 	pdist = NULL,
-	#' @field qdist quantile function
+	#' @field qdist [function] quantile function
 	qdist = NULL,
-	#' @field rdist random generator function
+	#' @field rdist [function] random generator function
 	rdist = NULL,
 	
 	## Constructor
@@ -185,8 +186,8 @@ AbstractDist = R6::R6Class( "AbstractDist",
 	## rvs ##{{{
 	#' @description
     #' Generation sample from the histogram
-    #' @param n Number of samples drawn
-    #' @return A vector of samples
+    #' @param n [integer] Number of samples drawn
+    #' @return [vector] A vector of samples
 	rvs = function( n )
 	{
 		params = self$params
@@ -198,8 +199,8 @@ AbstractDist = R6::R6Class( "AbstractDist",
 	## density ##{{{
 	#' @description
     #' Density function
-    #' @param x Values to compute the density
-    #' @return density
+    #' @param x [vector] Values to compute the density
+    #' @return [vector] density
 	density = function(x)
 	{
 		params = self$params
@@ -211,8 +212,8 @@ AbstractDist = R6::R6Class( "AbstractDist",
 	## logdensity ##{{{
 	#' @description
     #' Log density function
-    #' @param x Values to compute the log-density
-    #' @return log of density
+    #' @param x [vector] Values to compute the log-density
+    #' @return [vector] log of density
 	logdensity = function(x)
 	{
 		params = self$params
@@ -225,8 +226,8 @@ AbstractDist = R6::R6Class( "AbstractDist",
 	## cdf ##{{{
 	#' @description
     #' Cumulative Distribution Function
-    #' @param q Quantiles to compute the CDF
-    #' @return cdf values
+    #' @param q [vector] Quantiles to compute the CDF
+    #' @return [vector] cdf values
 	cdf = function(q)
 	{
 		params = self$params
@@ -238,8 +239,8 @@ AbstractDist = R6::R6Class( "AbstractDist",
 	## sf ##{{{
 	#' @description
     #' Survival Function
-    #' @param q Quantiles to compute the SF
-    #' @return sf values
+    #' @param q [vector] Quantiles to compute the SF
+    #' @return [vector] sf values
 	sf = function(q)
 	{
 		params = self$params
@@ -252,8 +253,8 @@ AbstractDist = R6::R6Class( "AbstractDist",
 	## icdf ##{{{
 	#' @description
     #' Inverse of Cumulative Distribution Function
-    #' @param p Probabilities to compute the CDF
-    #' @return icdf values
+    #' @param p [vector] Probabilities to compute the CDF
+    #' @return [vector] icdf values
 	icdf = function(p)
 	{
 		params = self$params
@@ -266,8 +267,8 @@ AbstractDist = R6::R6Class( "AbstractDist",
 	## isf ##{{{
 	#' @description
     #' Inverse of Survival Function
-    #' @param p Probabilities to compute the SF
-    #' @return isf values
+    #' @param p [vector] Probabilities to compute the SF
+    #' @return [vector] isf values
 	isf = function(p)
 	{
 		params = self$params
@@ -283,7 +284,7 @@ AbstractDist = R6::R6Class( "AbstractDist",
 	## fit ##{{{
 	#' @description
     #' Fit method
-    #' @param Y Dataset to infer the histogram
+    #' @param Y [vector] Dataset to infer the histogram
     #' @return `self`
 	fit = function(Y)
 	{
