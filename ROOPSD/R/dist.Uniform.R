@@ -156,8 +156,16 @@ Uniform = R6::R6Class( "Uniform",
 		{
 			if(is.numeric(value) && length(value) == 2 )
 			{
-				private$.min = value[1]
-				private$.max = value[2]
+				if( value[1] < value[2] )
+				{
+					private$.min = value[1]
+					private$.max = value[2]
+				}
+				else
+				{
+					private$.min = value[2]
+					private$.max = value[1]
+				}
 			}
 			
 		}
