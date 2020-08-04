@@ -114,6 +114,17 @@ Gamma = R6::R6Class( "Gamma",
 		v = stats::var(Y)
 		self$shape = e^2 / v
 		self$scale = v / e
+	},
+	##}}}
+	
+	gradient_negloglikelihood = function( params , Y )##{{{
+	{
+		self$params = params
+		dp    = base::c(NA,NA)
+		dp[1] = base::sum( self$shape / self$scale - Y / self$scale**2 )
+		dp[2] = base::sum( base::digamma(self$shape) + base::log(self$scale) - base::log(Y) )
+		
+		return(dp)
 	}
 	##}}}
 	
