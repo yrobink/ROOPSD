@@ -1,6 +1,6 @@
 Package: ROOPSD
 Title: R Object Oriented Programming for Statistical Distribution
-Version: 0.0.1
+Version: 1.0.0
 Date: 2020-01-16
 Authors@R: person("Yoann", "Robin", email = "yoann.robin.k@gmail.com", role = c("aut", "cre"))
 Description: Statistical distribution in OOP way.
