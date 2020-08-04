@@ -86,6 +86,15 @@
 #'
 #' Exponential distribution in OOP way. Based on AbstractDist
 #'
+#' @examples
+#' ## Generate sample
+#' rate = 0.5
+#' expl = ROOPSD::Exponential$new( rate = rate )
+#' X    = expl$rvs( n = 1000 )
+#'
+#' ## And fit parameters
+#' expl$fit(X)
+#'
 #' @export
 Exponential = R6::R6Class( "Exponential",
 	
@@ -109,6 +118,14 @@ Exponential = R6::R6Class( "Exponential",
 	fit_initialization = function(Y)##{{{
 	{
 		self$rate = 1. / base::mean(Y)
+	},
+	##}}}
+	
+	gradient_negloglikelihood = function( params , Y )##{{{
+	{
+		self$params = params
+		dp = base::mean(self$rate - Y * self$scale^2)
+		return(dp)
 	}
 	##}}}
 	
