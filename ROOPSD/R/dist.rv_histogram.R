@@ -109,8 +109,6 @@ rv_histogram = R6::R6Class( "rv_histogram" ,
 	min   = NULL,
 	#' @field max max value for the estimation
 	max   = NULL,
-	#' @field freeze not used currently
-	freeze = FALSE,
 	#' @field tol numerical tolerance
 	tol = 1e-2,
 	
