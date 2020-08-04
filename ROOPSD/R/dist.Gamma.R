@@ -86,6 +86,16 @@
 #'
 #' Gamma distribution in OOP way. Based on AbstractDist
 #'
+#' @examples
+#' ## Generate sample
+#' scale = 1.5
+#' shape = 0.5
+#' gaml = ROOPSD::Gamma$new( scale = scale , shape = shape )
+#' X    = gaml$rvs( n = 1000 )
+#'
+#' ## And fit parameters
+#' gaml$fit(X)
+#'
 #' @export
 Gamma = R6::R6Class( "Gamma",
 	
