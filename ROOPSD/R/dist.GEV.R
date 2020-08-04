@@ -87,6 +87,17 @@
 #'
 #' GEV distribution in OOP way. Based on AbstractDist
 #'
+#' @examples
+#' ## Generate sample
+#' loc   = 0
+#' scale = 0.5
+#' shape = -0.3
+#' gev = ROOPSD::GEV$new( loc = loc , scale = scale , shape = shape )
+#' X   = gev$rvs( n = 1000 )
+#'
+#' ## And fit parameters
+#' gev$fit(X)
+#'
 #' @export
 GEV = R6::R6Class( "GEV",
 	
@@ -124,6 +135,34 @@ GEV = R6::R6Class( "GEV",
 		self$scale = lmom[2] * kappa / ( (1 - 2^( - kappa )) * g )
 		self$loc   = lmom[1] - self$scale * (1 - g) / kappa
 		self$shape = - kappa
+	},
+	##}}}
+	
+	gradient_negloglikelihood = function( params , Y )##{{{
+	{
+		self$params = params
+		
+		## Usefull values
+		Z      = ( Y - self$loc ) / self$scale
+		Za1    = 1 + self$shape * Z
+		ishape = 1. / self$shape
+		Zamsi  = Za1^(-ishape)
+		dp     = base::c(NA,NA,NA)
+		shape  = self$shape
+		
+		## Remove 0 from shape
+		shape[base::abs(shape) < 1e-10] = 1e-10
+		
+		## Test
+		if( !(self$scale > 0) || !(Za1 > 0) )
+			return(dp)
+		
+		## Gradient
+		dp[1] = ( Zamsi - 1 - shape ) / ( self$scale * Za1 )
+		dp[2] = ( 1. + Z * ( Zamsi - 1 - shape ) / Za1 ) / self$scale
+		dp[3] = ( ( Zamsi - 1. ) * base::log(Za1) * ishape**2 + ( 1. + ishape - ishape * Zamsi ) * Z / Za1 )
+		
+		return(dp)
 	}
 	##}}}
 	
@@ -230,7 +269,7 @@ GEV = R6::R6Class( "GEV",
 	#' @return A new `GEV` object.
 	initialize = function( loc = 0 , scale = 1 , shape = -0.1 )
 	{
-		super$initialize( stats::dgev , stats::pgev , stats::qgev , stats::rgev , "GEV" , FALSE )
+		super$initialize( ROOPSD::dgev , ROOPSD::pgev , ROOPSD::qgev , ROOPSD::rgev , "GEV" , TRUE )
 		self$loc   = loc
 		self$scale = scale
 		self$shape = shape
