@@ -2,14 +2,6 @@
 
 ## Features
 
-## TODO
-Law to add:
-- GEV
-- GPD
-- Empirical
-- uniform
-- mixture
-
 ## R instruction
 
 Requires:
@@ -27,7 +19,7 @@ Rscript build.R -c -v -i
 
 ## Examples
 
-## Licence
+## License
 
 Copyright Yoann Robin, 2020
 
