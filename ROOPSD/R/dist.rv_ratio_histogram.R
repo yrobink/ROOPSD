@@ -181,7 +181,7 @@ rv_ratio_histogram = R6::R6Class( "rv_ratio_histogram" ,
     #' @return sf values
 	sf = function( q ) 
 	{
-		return( 1. - private$cdffn(q) )
+		return( 1. - self$cdf(q) )
 	},
 	##}}}
 	
@@ -192,7 +192,7 @@ rv_ratio_histogram = R6::R6Class( "rv_ratio_histogram" ,
     #' @return isf values
 	isf = function( p ) 
 	{
-		return(private$icdffn(1. - p))
+		return(self$icdf(1. - p))
 	},
 	##}}}
 	
