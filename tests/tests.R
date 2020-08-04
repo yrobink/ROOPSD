@@ -90,12 +90,8 @@ base::rm( list = base::ls() )
 
 library(R6)
 library(devtools)
-#library(roxygen2)
-#library(ggplot2)
-#library(gridExtra)
+library(roxygen2)
 
-try(roxygen2::roxygenize("../ROOPSD"))
-devtools::load_all("../ROOPSD")
 roxygen2::roxygenize("../ROOPSD")
 devtools::load_all("../ROOPSD")
 
@@ -148,16 +144,17 @@ PlotTools = R6::R6Class( "PlotTools" , ##{{{
 		invisible(tolower(os))
 	},
 	
-	new_screen = function()
+	new_screen = function( nrow , ncol , width = 5 * ncol , height = 5 * nrow )
 	{
 		if( self$os == "osx" )
 		{
-			grDevices::quartz()
+			grDevices::quartz( width = width , height = height )
 		}
 		if( self$os == "linux" )
 		{
-			grDevices::X11()
+			grDevices::X11( width = width , height = height )
 		}
+		graphics::par( mfrow = base::c(nrow,ncol) )
 	},
 	
 	wait = function()
@@ -176,61 +173,179 @@ plt = PlotTools$new()
 ## Functions ##
 ###############
 
-## Test distributions
-##===================
+## Tests
+##======
 
-test_distribution = function( law , show = TRUE ,  ... )##{{{
+test_parametric_law = function( claw , show = TRUE , ... ) ##{{{
 {
-	## Set the law
-	params  = list(...)
-	law_set = base::do.call( law$new , params )
+	## Sample data
+	params = list(...)
+	law    = base::do.call( claw$new , params )
+	X      = law$rvs(10000)
 	
-	## Generate a sample
-	X = law_set$rvs( n = 10000 )
+	## Fit
+	lawf   = claw$new()
+	lawf$fit(X)
 	
-	## Fit params
-	law_fit = law$new()
-	law_fit$fit(X)
+	## cdf and sf
+	x    = base::seq( base::min(X) , base::max(X) , length = 1000 )
+	cdf  = law$cdf(x)
+	sf   = law$sf(x)
+	cdff = lawf$cdf(x)
+	sff  = lawf$sf(x)
 	
-	## Possible values:
-	q = base::seq( base::min(X) , base::max(X) , length = 100 )
-	p = base::seq( 0 , 1 , length = 100 )
+	## icdf and isf
+	eps   = 1e-3
+	q     = base::seq( eps , 1 - eps , length = 1000 )
+	icdf  = law$icdf(q)
+	isf   = law$isf(q)
+	icdff = lawf$icdf(q)
+	isff  = lawf$isf(q)
 	
-	## Test functions
-	cdfS  = law_set$cdf(q)
-	cdfF  = law_fit$cdf(q)
+	## Density
+	dens  = law$density(x)
+	densf = lawf$density(x)
+	hX    = hist( X , plot = FALSE )
+	nb    = length(hX$breaks)
+	hXp   = ( hX$breaks[2:nb] + hX$breaks[1:(nb-1)] ) / 2
 	
-	sfS   = law_set$sf(q)
-	sfF   = law_fit$sf(q)
+	## Plot
+	if( show )
+	{
+		plt$new_screen( nrow = 1 , ncol = 3 )
+		
+		## Plot cdf and sf
+		plot(  x , cdf  , col = "red"  , type = "l" , main = law$name )
+		lines( x , cdff , col = "blue" , type = "l" , lty = 2 )
+		lines( x , sf   , col = "red"  , type = "l" )
+		lines( x , sff  , col = "blue" , type = "l" , lty = 2 )
+		
+		## Plot icdf and isf
+		plot(  x , icdf  , col = "red"  , type = "l" )
+		lines( x , icdff , col = "blue" , type = "l" , lty = 2 )
+		lines( x , isf   , col = "red"  , type = "l" )
+		lines( x , isff  , col = "blue" , type = "l" , lty = 2 )
+		
+		## Plot density
+		plot( hXp , hX$density , col = "red" , type = "h" , ylim = base::c(-0.01,base::max(dens,densf)) )
+		lines( x , dens  , col = "red"  , type = "l" )
+		lines( x , densf , col = "blue" , type = "l" , lty = 2 )
+	}
 	
-	icdfS = law_set$icdf(p)
-	icdfF = law_fit$icdf(p)
-	
-	isfS  = law_set$isf(p)
-	isfF  = law_fit$isf(p)
-	
-	densS = law_set$density(q)
-	densF = law_fit$density(q)
+}
+##}}}
+
+test_multivariate_normal = function( show = TRUE )##{{{
+{
+	lX    = list()
+	xymin = 1e9
+	xymax = -1e9
+	for( i in 1:3 )
+	{
+		mean = stats::runif( n = 2 , min = -5 , max = 5 )
+		cov  = ROOPSD::rspd_matrix( n = 1 , d = 2 , FALSE )
+		lX[[i]] = ROOPSD::rmultivariate_normal( n = 10000 , mean = mean , cov = cov )
+		xymin   = base::min( xymin , lX[[i]] )
+		xymax   = base::max( xymax , lX[[i]] )
+	}
+	xylim = base::c(xymin,xymax)
 	
 	if( show )
 	{
-		name = law_set$name
+		plt$new_screen( nrow = 1 , ncol = 1 )
 		
-		plt$new_screen()
-		graphics::par( mfrow = base::c( 2 , 3 ) )
+		color = base::c( "red" , "blue" , "green" )
+		i = 1
+		plot( lX[[i]][,1] , lX[[i]][,2] , xlim = xylim , ylim = xylim , col = color[i] , pch = 4 , xlab = "x" , ylab = "y" , main = "Bivariate Normal" )
+		for( i in 2:3 )
+			points( lX[[i]][,1] , lX[[i]][,2] , col = color[i] , pch = 4 )
 		
-		graphics::plot(  q , cdfS  , col = "blue" , type = "l" , main = base::paste( name , "CDF" ) , xlab = "quantile" , ylab = "proba" )
-		graphics::lines( q , cdfF  , col = "red"  , type = "l" , main = base::paste( name , "CDF" ) , xlab = "quantile" , ylab = "proba" )
+	}
+}
+##}}}
+
+test_rv_histogram = function( show = TRUE ) ##{{{
+{
+	## Sample data
+	X = numeric(10000)
+	X[1:2000] = stats::rexp( n = 2000 , rate = 1 )
+	X[2001:10000] = stats::rnorm( n = 8000 , mean = 5 , sd = 1 )
+	
+	## Fit
+	law = ROOPSD::rv_histogram$new( Y = X )
+	
+	## cdf and sf
+	x    = base::seq( base::min(X) , base::max(X) , length = 1000 )
+	cdf  = law$cdf(x)
+	sf   = law$sf(x)
+	
+	## icdf and isf
+	eps   = 1e-3
+	q     = base::seq( eps , 1 - eps , length = 1000 )
+	icdf  = law$icdf(q)
+	isf   = law$isf(q)
+	
+	## Density
+	dens  = law$density(x)
+	hX    = hist( X , plot = FALSE )
+	nb    = length(hX$breaks)
+	hXp   = ( hX$breaks[2:nb] + hX$breaks[1:(nb-1)] ) / 2
+	
+	## Plot
+	if( show )
+	{
+		plt$new_screen( nrow = 1 , ncol = 3 )
 		
-		graphics::plot(  q , sfS   , col = "blue" , type = "l" , main = base::paste( name , "SF" ) , xlab = "quantile" , ylab = "proba" )
-		graphics::lines( q , sfF   , col = "red"  , type = "l" , main = base::paste( name , "SF" ) , xlab = "quantile" , ylab = "proba" )
+		## Plot cdf and sf
+		plot(  x , cdf  , col = "red"  , type = "l" , main = law$name )
+		lines( x , sf   , col = "red"  , type = "l" )
 		
-		graphics::plot(  q , densS , col = "blue" , type = "l" , main = base::paste( name , "density" ) , xlab = "quantile" , ylab = "proba" )
-		graphics::lines( q , densF , col = "red"  , type = "l" , main = base::paste( name , "density" ) , xlab = "quantile" , ylab = "proba" )
-		graphics::plot(  p , icdfS , col = "blue" , type = "l" , main = base::paste( name , "iCDF" ) , ylab = "quantile" , xlab = "proba" )
-		graphics::lines( p , icdfF , col = "red"  , type = "l" , main = base::paste( name , "iCDF" ) , ylab = "quantile" , xlab = "proba" )
-		graphics::plot(  p , isfS  , col = "blue" , type = "l" , main = base::paste( name , "iSF" ) , ylab = "quantile" , xlab = "proba" )
-		graphics::lines( p , isfF  , col = "red"  , type = "l" , main = base::paste( name , "iSF" ) , ylab = "quantile" , xlab = "proba" )
+		## Plot icdf and isf
+		plot(  x , icdf  , col = "red"  , type = "l" )
+		lines( x , isf   , col = "red"  , type = "l" )
+		
+		## Plot density
+		plot( hXp , hX$density , col = "red" , type = "h" , ylim = base::c(-0.01,base::max(dens)) )
+		lines( x , dens  , col = "red"  , type = "l" )
+	}
+	
+}
+##}}}
+
+test_rv_ratio_histogram = function( show = TRUE ) ##{{{
+{
+	## Sample data
+	X = numeric(10000)
+	X[1:2000] = 0
+	X[2001:10000] = stats::rnorm( n = 8000 , mean = 5 , sd = 1 )
+	
+	## Fit
+	law = ROOPSD::rv_ratio_histogram$new( Y = X , x0 = 0 )
+	
+	## cdf and sf
+	x    = base::seq( base::min(X) , base::max(X) , length = 1000 )
+	cdf  = law$cdf(x)
+	sf   = law$sf(x)
+	
+	## icdf and isf
+	eps   = 1e-3
+	q     = base::seq( eps , 1 - eps , length = 1000 )
+	icdf  = law$icdf(q)
+	isf   = law$isf(q)
+	
+	## Plot
+	if( show )
+	{
+		plt$new_screen( nrow = 1 , ncol = 2 )
+		
+		## Plot cdf and sf
+		plot(  x , cdf  , col = "red"  , type = "l" , main = law$name )
+		lines( x , sf   , col = "red"  , type = "l" )
+		
+		## Plot icdf and isf
+		plot(  x , icdf  , col = "red"  , type = "l" )
+		lines( x , isf   , col = "red"  , type = "l" )
+		
 	}
 	
 }
@@ -241,13 +356,20 @@ test_distribution = function( law , show = TRUE ,  ... )##{{{
 
 run_all_tests = function( show = FALSE )##{{{
 {
-	## Test distributions
-	test_distribution( ROOPSD::Normal      , show = show , mean = 2 , sd = 3       , freeze = FALSE )
-	test_distribution( ROOPSD::Exponential , show = show , rate = 0.5              , freeze = FALSE )
-	test_distribution( ROOPSD::Gamma       , show = show , shape = 2 , scale = 0.5 , freeze = FALSE )
+	## Test parametric laws
+	test_parametric_law( ROOPSD::Uniform     , show = show , min = -2 , max = 1 )
+	test_parametric_law( ROOPSD::Normal      , show = show , mean = 3 , sd = 1.5 )
+	test_parametric_law( ROOPSD::Exponential , show = show , rate = 0.5 )
+	test_parametric_law( ROOPSD::Gamma       , show = show , scale = 1.5 , shape = 0.5 )
+	test_parametric_law( ROOPSD::GEV         , show = show , loc = 1 , scale = 0.5 , shape = -0.6 )
+	test_parametric_law( ROOPSD::GPD         , show = show , loc = 1 , scale = 0.5 , shape = -0.3 )
+	test_multivariate_normal( show = show )
+	
+	## Non parametric
+	test_rv_histogram( show = show )
+	test_rv_ratio_histogram( show = show )
 }
 ##}}}
-
 
 
 ##########
