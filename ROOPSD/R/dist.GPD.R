@@ -81,3 +81,211 @@
 ##                                                                            ##
 ################################################################################
 ################################################################################
+
+
+#' GPD 
+#'
+#' GPD distribution in OOP way. Based on AbstractDist
+#'
+#' @examples
+#' ## Generate sample
+#' loc   = 0
+#' scale = 0.5
+#' shape = -0.3
+#' gpd = ROOPSD::GPD$new( loc = loc , scale = scale , shape = shape )
+#' X   = gpd$rvs( n = 1000 )
+#'
+#' ## And fit parameters
+#' gpd$fit( X , loc = 0 )
+#'
+#' @export
+GPD = R6::R6Class( "GPD",
+	
+	inherit = AbstractDist,
+	
+	## Private elements
+	##==============={{{
+	private = list(
+	
+	## Arguments
+	##==========
+	
+	#' @field loc location of the GPD law, fixed
+	.loc = NULL,
+	#' @field scale scale of the GPD law
+	.scale = NULL,
+	#' @field shape shape of the GPD law
+	.shape = NULL,
+	#' @field params params of the normal law
+	.params = NULL,
+	
+	## Methods
+	##========
+	
+	fit_initialization = function(Y)##{{{
+	{
+		lmom = Lmoments::Lmoments(Y[Y>self$loc])
+		
+		itau  = lmom[1] / lmom[2]
+		
+		self$scale = lmom[1] * ( itau - 1 )
+		self$shape = 2 - itau
+	},
+	##}}}
+	
+	gradient_negloglikelihood = function( params , Y )##{{{
+	{
+		self$params = params
+		
+		## Remove 0 from shape
+		shape = self$shape
+		shape[base::abs(shape) < 1e-10] = 1e-10
+		
+		## Usefull values
+		Yu = Y[ Y > self$loc ]
+		Z        = ( Yu - self$loc ) / self$scale
+		ZZ       = 1. + shape * Z
+		exponent = 1. + 1. / shape
+		
+		## Gradient
+		dp    = base::c(NA,NA)
+		dp[1] = - exponent * shape * Z / ZZ / self$scale + 1. / self$scale
+		dp[2] = - base::log(ZZ) / shape^2 + exponent * Z / ZZ
+		return(dp)
+	}
+	##}}}
+	
+	),
+	##}}}
+	
+	## Active elements
+	##================{{{
+	active = list(
+	
+	## params ##{{{
+	#' @description
+    #' Setter/getter of params
+	params = function(value)
+	{
+		if(missing(value))
+		{
+			return( list( scale = private$.scale , shape = private$.shape ) )
+		}
+		else
+		{
+			if(is.numeric(value) && length(value) == 2 )
+			{
+				if( value[1] > 0 )
+					private$.scale = value[1]
+				private$.shape = value[2]
+			}
+			
+		}
+	},
+	##}}}
+	
+	## loc ##{{{
+	#' @description
+    #' Setter/getter of loc
+	loc = function(value)
+	{
+		if(missing(value))
+		{
+			return(private$.loc)
+		}
+		else
+		{
+			private$.loc = value
+		}
+	},
+	##}}}
+	
+	## scale ##{{{
+	#' @description
+    #' Setter/getter of scale
+	scale = function(value)
+	{
+		if(missing(value))
+		{
+			return(private$.scale)
+		}
+		else
+		{
+			if(value > 0)
+				private$.scale = value
+		}
+	},
+	##}}}
+	
+	## shape ##{{{
+	#' @description
+    #' Setter/getter of shape
+	shape = function(value)
+	{
+		if(missing(value))
+		{
+			return(private$.shape)
+		}
+		else
+		{
+			private$.shape = value
+		}
+	}
+	##}}}
+	
+	
+	),
+	##}}}
+	
+	## Public elements
+	##============={{{
+	
+	public = list(
+	
+	## Arguments
+	##==========
+	
+	## Constructor
+	##============
+	
+	## initialize ##{{{
+	#' @description
+    #' Create a new GPD object.
+	#' @param loc   [double] location parameter
+	#' @param scale [double] scale parameter
+	#' @param shape [double] shape parameter
+	#' @return A new `GPD` object.
+	initialize = function( loc = 0 , scale = 1 , shape = -0.1 )
+	{
+		super$initialize( ROOPSD::dgpd , ROOPSD::pgpd , ROOPSD::qgpd , ROOPSD::rgpd , "GPD" , TRUE )
+		self$loc   = loc
+		self$scale = scale
+		self$shape = shape
+	},
+	##}}}
+	
+	## Fit
+	##====
+	
+	## fit ##{{{
+	#' @description
+    #' Fit method
+    #' @param Y Dataset to infer the histogram
+    #' @param loc location parameter
+    #' @return `self`
+	fit = function( Y , loc )
+	{
+		self$loc = loc
+		
+		return(super$fit(Y))
+	}
+	##}}}
+	
+	
+	)
+	##}}}
+	
+)
+
+
+

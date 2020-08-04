@@ -3,6 +3,7 @@
 export(AbstractDist)
 export(Exponential)
 export(GEV)
+export(GPD)
 export(Gamma)
 export(Normal)
 export(Uniform)
