@@ -103,6 +103,10 @@ AbstractDist = R6::R6Class( "AbstractDist",
 	#' @field name [string] name of the distribution
 	.name = NULL,
 	.has_gr_nlll = FALSE,
+	#' @field opt [stats::optim result] Result of the MLE to find parameters
+	.opt = NULL,
+	#' @field cov [matrix] Covariance matrix of parameters, inverse of hessian
+	.cov = NULL,
 	
 	## Methods
 	##========
@@ -133,6 +137,30 @@ AbstractDist = R6::R6Class( "AbstractDist",
 		if(base::missing(value))
 		{
 			return(private$.name)
+		}
+	},
+	##}}}
+	
+	## opt ##{{{
+	opt = function(value) 
+	{
+		if(base::missing(value))
+		{
+			return(private$.opt)
+		}
+	},
+	##}}}
+	
+	## cov ##{{{
+	cov = function(value) 
+	{
+		if(base::missing(value))
+		{
+			return(private$.cov)
+		}
+		else
+		{
+			private$.cov = value
 		}
 	}
 	##}}}
@@ -290,10 +318,11 @@ AbstractDist = R6::R6Class( "AbstractDist",
 	{
 		private$fit_initialization(Y)
 		if( private$.has_gr_nlll )
-			opt = stats::optim( par = as.vector(self$params) , fn = private$negloglikelihood , method = "BFGS" , Y = Y , gr = private$gradient_negloglikelihood )
+			private$.opt = stats::optim( par = as.vector(self$params) , fn = private$negloglikelihood , method = "BFGS" , hessian = TRUE , Y = Y , gr = private$gradient_negloglikelihood )
 		else
-			opt = stats::optim( par = as.vector(self$params) , fn = private$negloglikelihood , method = "BFGS" , Y = Y )
-		self$params = opt$par
+			private$.opt = stats::optim( par = as.vector(self$params) , fn = private$negloglikelihood , method = "BFGS" , hessian = TRUE , Y = Y )
+		self$params = self$opt$par
+		self$cov    = base::try( base::solve(self$opt$hessian) , silent = TRUE )
 		
 		return(self)
 	}
