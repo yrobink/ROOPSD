@@ -9,6 +9,13 @@
 - Symmetric positive definite matrix generator
 
 
+## Platforms tested
+
+- Mageia7b (R 3.5.3)
+- Debian buster (R 3.5.2-1)
+- Mac OSX Catalina (R 4.0.2)
+
+
 ## R instruction
 
 Requires:
