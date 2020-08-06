@@ -93,6 +93,7 @@ args = commandArgs( trailingOnly = TRUE )
 verbose = FALSE
 install = FALSE
 build   = TRUE
+build_manual = FALSE
 check   = FALSE
 if( length(args) > 0 )
 {
@@ -114,6 +115,10 @@ if( length(args) > 0 )
 		{
 			check = TRUE
 		}
+		if( a == "-bm" || a == "--build-manual" )
+		{
+			build_manual = TRUE
+		}
 	}
 }
 
@@ -131,9 +136,12 @@ if( build )
 	roxygen2::roxygenize("ROOPSD")
 	if( verbose ) cat( "Final build" )
 	roopsd = devtools::build("ROOPSD")
-	devtools::build_manual("ROOPSD")
 }
 
+if( build_manual )
+{
+	devtools::build_manual("ROOPSD")
+}
 
 ## Check
 ##======
