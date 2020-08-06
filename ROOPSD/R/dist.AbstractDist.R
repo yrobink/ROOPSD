@@ -89,6 +89,10 @@
 #'
 #' @details
 #' This class is only used to be herited
+#'
+#' @importFrom R6 R6Class
+#' @importFrom methods new
+#'
 #' @export
 AbstractDist = R6::R6Class( "AbstractDist",
 	

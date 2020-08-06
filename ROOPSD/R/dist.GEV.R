@@ -91,6 +91,8 @@
 #' @details
 #' See AbstractDist for generic methods
 #'
+#' @importFrom Lmoments Lmoments
+#'
 #' @examples
 #' ## Generate sample
 #' loc   = 0
