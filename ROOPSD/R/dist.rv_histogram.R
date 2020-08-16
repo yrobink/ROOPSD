@@ -237,13 +237,19 @@ rv_histogram = R6::R6Class( "rv_histogram" ,
 			delta = min( diff(bins) )
 		}
 		quants = private$cdffn(x)
-		private$icdffn = stats::approxfun( quants , x , yleft = self$min - delta , yright = self$max + delta )
+		private$icdffn = stats::approxfun( quants , x ,
+		                                   yleft = self$min - delta ,
+		                                   yright = self$max + delta ,
+		                                   ties = "ordered" )
 		
 		## Density function
 		hist = graphics::hist( Y , breaks = x , plot = FALSE )
 		p = hist$density #/ base::sum(hist$density)
 		c = hist$mids
-		private$densityfn = stats::approxfun( c , p , yleft = 0 , yright = 0 )
+		private$densityfn = stats::approxfun( c , p ,
+		                                      yleft = 0 ,
+		                                      yright = 0 ,
+		                                      ties = "ordered" )
 		
 		return(self)
 	}
