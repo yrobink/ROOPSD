@@ -173,15 +173,45 @@ plt = PlotTools$new()
 ## Functions ##
 ###############
 
+mixture.rvs = function( n , l_dist , weights = NULL )
+{
+	## Parameters
+	##===========
+	n_dist = length(l_dist)
+	
+	## Weights
+	##========
+	if( is.null(weights) )
+		weights = 1 + numeric(n_dist)
+	weights = weights / base::sum(weights)
+	
+	## Build tools to apply rvs
+	##=========================
+	n_per_dist = as.integer(n * weights)
+	n_per_dist[1] = n_per_dist[1] + n - base::sum(n_per_dist)
+	
+	rvsdist = list()
+	for( i in 1:n_dist )
+		rvsdist[[i]] = list( dist = l_dist[[i]] , n = n_per_dist[i] )
+	
+	## And draw values
+	##================
+	res = unlist( lapply( rvsdist , function(rvs) { rvs$dist$rvs(rvs$n) } ) )
+	
+	return(res)
+}
 
 ##########
 ## main ##
 ##########
 
 ## Sample data
-Y = numeric(10000)
-Y[1:2000] = stats::rexp( n = 2000 , rate = 1 )
-Y[2001:10000] = stats::rnorm( n = 8000 , mean = 5 , sd = 1 )
+l_dist  = list( Exponential$new() , Normal$new( mean = 5 , sd = 1 ) )
+weights = base::c( 0.2 , 0.8 )
+n = 1000
+Y = mixture.rvs( n , l_dist , weights )
+hist( Y , breaks = 50 )
+##
 
 
 
