@@ -84,7 +84,10 @@
 
 #' rmultivariate_normal
 #'
-#' Generate sample from a multivariate normal distribution
+#' Generate sample from a multivariate normal distribution. The generator uses
+#' a singular values decomposition to draw samples from a normal distribution
+#' in the basis of the singular vector. Consequently, the covariance matrix
+#' can be singular.
 #'
 #' @param n [integer] numbers of samples drawn
 #' @param mean [vector] mean of Normal law
@@ -100,10 +103,10 @@
 #' @export
 rmultivariate_normal = function( n , mean , cov )
 {
-	svd = base::svd(cov)
-	S =  svd$u %*% base::diag(base::sqrt(svd$d)) %*% base::t(svd$u)
+	svd   = base::svd(cov)
+	S     =  svd$u %*% base::diag(base::sqrt(svd$d)) %*% base::t(svd$u)
 	n_dim = length(mean)
-	X = base::matrix( stats::rnorm(n*n_dim) , nrow = n , ncol = n_dim )
-	X = base::t(base::apply( X , 1 , function(x) { mean + S %*% x } ))
+	X     = base::matrix( stats::rnorm(n*n_dim) , nrow = n , ncol = n_dim )
+	X     = base::t(base::apply( X , 1 , function(x) { mean + S %*% x } ))
 	return(X)
 }

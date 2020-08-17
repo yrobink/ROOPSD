@@ -84,7 +84,9 @@
 
 #' rspd_matrix
 #'
-#' Generate a random symetric positive definite matrix
+#' Generate a random symetric positive definite matrix. The generator just
+#' draw matrix of the form O * diag(positive values) * t(O), where O is an
+#' orthogonal matrix from ROOPSD::rorthogonal_group.
 #'
 #' @param d [integer] Dimension of the matrix
 #' @param n [integer] numbers of samples drawn
