@@ -8,12 +8,14 @@ Description: Statistical distribution in OOP (Object Oriented Programming) way.
              distribution, and new distributions can be easily added with the
              class AbstractDist. A useful point is the generic fit method for
              each class, which uses a maximum likelihood estimation to find the
-             parameters of a dataset. Furthermore, the rv_histogram class gives
-             a non-parametric fit, with the same accessors that for the classic
-             distribution. Finally, three random generators useful to build
-             synthetic data are given: a multivariate normal generator, an
+             parameters of a dataset, see, e.g. Hastie, T. and al (2009)
+             <isbn:978-0-387-84857-0>. Furthermore, the rv_histogram class
+             gives a non-parametric fit, with the same accessors that for the
+             classic distribution. Finally, three random generators useful to
+             build synthetic data are given: a multivariate normal generator, an
              orthogonal matrix generator, and a symmetric positive definite
-             matrix generator.
+             matrix generator, see Mezzadri, F. (2007)
+             <arxiv:arXiv:math-ph/0609050>
 URL: https://github.com/yrobink/ROOPSD
 Depends: R (>= 3.3)
 License: CeCILL-2
