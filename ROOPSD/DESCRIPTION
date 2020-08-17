@@ -15,7 +15,7 @@ Description: Statistical distribution in OOP (Object Oriented Programming) way.
              build synthetic data are given: a multivariate normal generator, an
              orthogonal matrix generator, and a symmetric positive definite
              matrix generator, see Mezzadri, F. (2007)
-             <arxiv:arXiv:math-ph/0609050>
+             <arxiv:arXiv:math-ph/0609050>.
 URL: https://github.com/yrobink/ROOPSD
 Depends: R (>= 3.3)
 License: CeCILL-2
