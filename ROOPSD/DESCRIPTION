@@ -3,7 +3,7 @@ Title: R Object Oriented Programming for Statistical Distribution
 Date: 2020-08-16
 Version: 0.2.2
 Authors@R: person("Yoann", "Robin", email = "yoann.robin.k@gmail.com", role = c("aut", "cre"))
-Description: Statistical distribution in OOP (Object Orientied Programming) way.
+Description: Statistical distribution in OOP (Object Oriented Programming) way.
              This package proposes a R6 class interface to classic statistical
              distribution, and new distributions can be easily added with the
              class AbstractDist. A useful point is the generic fit method for
@@ -12,7 +12,7 @@ Description: Statistical distribution in OOP (Object Orientied Programming) way.
              a non-parametric fit, with the same accessors that for the classic
              distribution. Finally, three random generators useful to build
              synthetic data are given: a multivariate normal generator, an
-             orthogonal matrix generator, and a symetric positive definite
+             orthogonal matrix generator, and a symmetric positive definite
              matrix generator.
 URL: https://github.com/yrobink/ROOPSD
 Depends: R (>= 3.3)
