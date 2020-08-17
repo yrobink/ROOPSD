@@ -352,6 +352,49 @@ test_rv_ratio_histogram = function( show = TRUE ) ##{{{
 }
 ##}}}
 
+test_rv_mixture = function( show = TRUE ) ##{{{
+{
+	## Sample data
+	l_dist  = list( Exponential$new() , Normal$new( mean = 5 , sd = 1 ) )
+	weights = base::c( 0.2 , 0.8 )
+	
+	rvX = rv_mixture$new( l_dist , weights )
+	X   = rvX$rvs( 10000 )
+	x   = base::seq( base::min(X) -1 , base::max(X) + 1 , length = 100 )
+	p   = base::seq( 1e-3 , 1 - 1e-3 , length = 1000 )
+	
+	
+	## Density
+	dens = rvX$density(x)
+	hist = graphics::hist( X , breaks = 50 , plot = FALSE )
+	
+	## cdf
+	cdf = rvX$cdf(x)
+	sf  = rvX$sf(x)
+	
+	## icdf
+	icdf = rvX$icdf(p)
+	isf  = rvX$isf(p)
+	
+	if(show)
+	{
+		## Plot
+		nrow = 1
+		ncol = 3
+		plt$new_screen( nrow , ncol )
+		
+		plot( hist$mids , hist$density , col = "red" , type = "h" )
+		lines( x , rvX$density(x) , col = "red" )
+		
+		plot( x , cdf , col = "red" , type = "l" )
+		lines( x , sf , col = "blue" )
+		
+		plot( p , icdf , col = "red" , type = "l" )
+		lines( p , isf , col = "blue" )
+	}
+}
+##}}}
+
 ## All in one
 ##===========
 
@@ -364,6 +407,7 @@ run_all_tests = function( show = FALSE )##{{{
 	test_parametric_law( ROOPSD::Gamma       , show = show , scale = 1.5 , shape = 0.5 )
 	test_parametric_law( ROOPSD::GEV         , show = show , loc = 1 , scale = 0.5 , shape = -0.6 )
 	test_parametric_law( ROOPSD::GPD         , show = show , loc = 1 , scale = 0.5 , shape = -0.3 )
+	test_rv_mixture( show = show )
 	test_multivariate_normal( show = show )
 	
 	## Non parametric
