@@ -170,37 +170,14 @@ PlotTools = R6::R6Class( "PlotTools" , ##{{{
 plt = PlotTools$new()
 
 
+#############
+## Classes ##
+#############
+
 ###############
 ## Functions ##
 ###############
 
-mixture.rvs = function( n , l_dist , weights = NULL )
-{
-	## Parameters
-	##===========
-	n_dist = length(l_dist)
-	
-	## Weights
-	##========
-	if( is.null(weights) )
-		weights = 1 + numeric(n_dist)
-	weights = weights / base::sum(weights)
-	
-	## Build tools to apply rvs
-	##=========================
-	n_per_dist = as.integer(n * weights)
-	n_per_dist[1] = n_per_dist[1] + n - base::sum(n_per_dist)
-	
-	rvsdist = list()
-	for( i in 1:n_dist )
-		rvsdist[[i]] = list( dist = l_dist[[i]] , n = n_per_dist[i] )
-	
-	## And draw values
-	##================
-	res = unlist( lapply( rvsdist , function(rvs) { rvs$dist$rvs(rvs$n) } ) )
-	
-	return(res)
-}
 
 ##########
 ## main ##
@@ -209,12 +186,38 @@ mixture.rvs = function( n , l_dist , weights = NULL )
 ## Sample data
 l_dist  = list( Exponential$new() , Normal$new( mean = 5 , sd = 1 ) )
 weights = base::c( 0.2 , 0.8 )
-n = 1000
-Y = mixture.rvs( n , l_dist , weights )
-hist( Y , breaks = 50 )
-##
+
+rvX = rv_mixture$new( l_dist , weights )
+X   = rvX$rvs( 10000 )
+x   = base::seq( base::min(X) -1 , base::max(X) + 1 , length = 100 )
+p   = base::seq( 1e-3 , 1 - 1e-3 , length = 1000 )
 
 
+## Density
+dens = rvX$density(x)
+hist = graphics::hist( X , breaks = 50 , plot = FALSE )
+
+## cdf
+cdf = rvX$cdf(x)
+sf  = rvX$sf(x)
+
+## icdf
+icdf = rvX$icdf(p)
+isf  = rvX$isf(p)
+
+## Plot
+nrow = 1
+ncol = 3
+plt$new_screen( nrow , ncol )
+
+plot( hist$mids , hist$density , col = "red" , type = "h" )
+lines( x , rvX$density(x) , col = "red" )
+
+plot( x , cdf , col = "red" , type = "l" )
+lines( x , sf , col = "blue" )
+
+plot( p , icdf , col = "red" , type = "l" )
+lines( p , isf , col = "blue" )
 
 plt$wait()
 print("Done")
