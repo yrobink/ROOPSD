@@ -86,7 +86,10 @@
 #'
 #' Generate a random symetric positive definite matrix. The generator just
 #' draw matrix of the form O * diag(positive values) * t(O), where O is an
-#' orthogonal matrix from ROOPSD::rorthogonal_group.
+#' orthogonal matrix from ROOPSD::rorthogonal_group. Note that the parameter
+#' gen = stats::rexp draw positive eigen values, but the code do not control
+#' if eigen values are positive. So you can accept negative eigen values using
+#' another generators.
 #'
 #' @param d [integer] Dimension of the matrix
 #' @param n [integer] numbers of samples drawn
