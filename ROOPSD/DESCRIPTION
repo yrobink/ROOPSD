@@ -1,7 +1,7 @@
 Package: ROOPSD
 Title: R Object Oriented Programming for Statistical Distribution
 Date: 2020-08-17
-Version: 0.2.3
+Version: 0.2.4
 Authors@R: person("Yoann", "Robin", email = "yoann.robin.k@gmail.com", role = c("aut", "cre"))
 Description: Statistical distribution in OOP (Object Oriented Programming) way.
              This package proposes a R6 class interface to classic statistical
@@ -15,7 +15,7 @@ Description: Statistical distribution in OOP (Object Oriented Programming) way.
              build synthetic data are given: a multivariate normal generator, an
              orthogonal matrix generator, and a symmetric positive definite
              matrix generator, see Mezzadri, F. (2007)
-             <arxiv:arXiv:math-ph/0609050>.
+             <arxiv:math-ph/0609050>.
 URL: https://github.com/yrobink/ROOPSD
 Depends: R (>= 3.3)
 License: CeCILL-2
