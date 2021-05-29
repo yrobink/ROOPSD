@@ -92,6 +92,7 @@
 #'
 #' @importFrom R6 R6Class
 #' @importFrom methods new
+#' @importFrom numDeriv grad
 #'
 #' @export
 AbstractDist = R6::R6Class( "AbstractDist",
@@ -338,6 +339,141 @@ AbstractDist = R6::R6Class( "AbstractDist",
 		self$ks.test$data.name = NULL
 		
 		return(self)
+	},
+	##}}}
+	
+	## Confidence interval and diagnostic
+	
+	## qgradient ##{{{
+	#' @description
+	#' Gradient of the quantile function
+    #' @param p [vector] Probabilities
+    #' @param lower.tail [bool] If CDF or SF.
+    #' @return [vector] gradient
+	qgradient = function( p , lower.tail = TRUE )
+	{
+		if(!lower.tail)
+			p = 1 - p
+		
+		FUN = function(c,p)
+		{
+			lc = as.list(c)
+			names(lc) = names(self$params)
+			lc$p = p
+			return(do.call( self$qdist , lc ) )
+		}
+		g = matrix( NA , ncol = length(self$params) , nrow = length(p) )
+		for( i in 1:length(p) )
+		{
+			g[i,] = numDeriv::grad( FUN , unlist(self$params) , p = p[i] )
+		}
+		
+		return(g)
+	},
+	##}}}
+	
+	## qdeltaCI ##{{{
+	#' @description
+	#' Confidence interval of the quantile function
+    #' @param p [vector] Probabilities
+    #' @param Rt [bool] if Probabilities or return times
+    #' @param alpha [double] level of confidence interval
+    #' @return [list] Quantiles, and confidence interval
+	qdeltaCI = function( p , Rt = FALSE , alpha = 0.05 )
+	{
+		if(Rt) p = 1. / p
+		grad = as.matrix( self$qgradient( p , FALSE ) , nrow = length(p) )
+		qvar = colSums(base::t(grad) * (self$cov %*% base::t(grad)))
+		names(qvar) = base::c()
+		
+		qlevel       = self$isf(p)
+		qlevel_left  = qlevel + stats::qnorm(     alpha / 2 ) * base::sqrt(qvar)
+		qlevel_right = qlevel + stats::qnorm( 1 - alpha / 2 ) * base::sqrt(qvar)
+		
+		return( list(q = qlevel , left = qlevel_left , right = qlevel_right ) )
+	},
+	##}}}
+	
+	## pdeltaCI ##{{{
+	#' @description
+	#' Confidence interval of the CDF function
+    #' @param x [vector] Quantiles
+    #' @param Rt [bool] if Probabilities or return times
+    #' @param alpha [double] level of confidence interval
+    #' @return [list] CDF, and confidence interval
+	pdeltaCI = function( x , Rt = FALSE , alpha = 0.05 )
+	{
+		grad = as.matrix( self$pgradient( x , FALSE ) , nrow = length(x) )
+		pvar = colSums(base::t(grad) * (self$cov %*% base::t(grad)))
+		names(pvar) = base::c()
+		
+		plevel       = self$sf(x)
+		plevel_left  = plevel + stats::qnorm(     alpha / 2 ) * base::sqrt(pvar)
+		plevel_right = plevel + stats::qnorm( 1 - alpha / 2 ) * base::sqrt(pvar)
+		plevel_left  = base::pmax( 0 , plevel_left )
+		plevel_left  = base::pmin( 1 , plevel_left )
+		plevel_right = base::pmax( 0 , plevel_right )
+		plevel_right = base::pmin( 1 , plevel_right )
+		
+		if(Rt)
+		{
+			plevel = 1. / plevel
+			left   = 1. / plevel_right
+			right  = 1. / plevel_left
+			plevel_left  = left
+			plevel_right = right
+		}
+		
+		return( list(cdf = plevel , left = plevel_left , right = plevel_right ) )
+	},
+	##}}}
+	
+	## diagnostic ##{{{
+	#' @description
+	#' Diagnostic of the fitted law
+    #' @param Y [vector] data to check
+    #' @param alpha [double] level of confidence interval
+    #' @return [NULL]
+	diagnostic = function( Y , alpha = 0.05 )
+	{
+		graphics::par( mfrow = base::c(2,2) )
+		rvY = rv_histogram$new(Y = Y)
+		
+		## Probability plot
+		emp = rvY$cdf(Y)
+		mod = self$cdf(Y)
+		plot( mod , emp , xlab = "Model" , ylab = "Empirical" , xlim = base::c(0,1) , ylim = base::c(0,1) , main = "Probability" )
+		lines( c(0,1) , c(0,1) , col = "blue" )
+		
+		## Quantile plot
+		p   = seq( 0.01 , 0.99 , length = 100 )
+		emp = rvY$icdf(p)
+		mod = self$icdf(p)
+		xylim = base::c(min(emp,mod),max(emp,mod))
+		plot( mod , emp , xlim = xylim , ylim = xylim , xlab = "Model" , ylab = "Empirical" , main = "Quantile ")
+		lines( xylim , xylim , col = "blue" )
+		
+		## Return level plot
+		p   = self$cdf(Y)
+		Rts = 10^base::seq( base::log10( base::min(1/p) )  , base::log10( base::max(1/p) ) , length = 100 )
+		p   = 1. / Rts
+		qlevel = self$qdeltaCI( p , FALSE , alpha = alpha )
+		ylim = base::c(base::min(qlevel$left,Y),base::max(qlevel$right,Y))
+		plot(  Rts , qlevel$q     , col = "black" , type = "l" , log = "x" , main = "Return level" , xlab = "Return time" , ylab = "Level" , ylim = ylim )
+		lines( Rts , qlevel$left  , col = "blue" )
+		lines( Rts , qlevel$right , col = "blue" )
+		points( 1. / rvY$sf(Y) , Y )
+		
+		## Density plot
+		minY = base::min(Y)
+		maxY = base::max(Y)
+		delY = 0.1 * (maxY-minY)
+		x = base::seq( minY - delY , maxY + delY , length = 1000 )
+		hist( Y , breaks = min(floor(0.1*length(Y)) + 1,100) , col = grDevices::rgb(1,0,0,0.1) , freq = FALSE , xlab = "Value" , main = "Density" )
+		lines( x , self$density(x) , col = "red" , type = "l" )
+		points( Y , base::rep(0,length(Y)) )
+		
+		invisible(NULL)
 	}
 	##}}}
 	
