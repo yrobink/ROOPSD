@@ -186,6 +186,8 @@ AbstractDist = R6::R6Class( "AbstractDist",
 	qdist = NULL,
 	#' @field rdist [function] random generator function
 	rdist = NULL,
+	#' @field ks.test [ks.test] Goodness of fit with ks.test
+	ks.test = NULL,
 	
 	## Constructor
 	##============
@@ -327,6 +329,13 @@ AbstractDist = R6::R6Class( "AbstractDist",
 			private$.opt = stats::optim( par = as.vector(self$params) , fn = private$negloglikelihood , method = "BFGS" , hessian = TRUE , Y = Y )
 		self$params = self$opt$par
 		self$cov    = base::try( base::solve(self$opt$hessian) , silent = TRUE )
+		
+		## Goodness of fit
+		ksparams = self$params
+		ksparams$x = Y
+		ksparams$y = self$pdist
+		self$ks.test = base::do.call( stats::ks.test , ksparams )
+		self$ks.test$data.name = NULL
 		
 		return(self)
 	}
