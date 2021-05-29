@@ -145,8 +145,10 @@ PlotTools = R6::R6Class( "PlotTools" , ##{{{
 		invisible(tolower(os))
 	},
 	
-	new_screen = function( nrow , ncol , width = 5 * ncol , height = 5 * nrow )
+	new_screen = function( nrow , ncol , ratio = 4 / 3 , scale = 5 / max(nrow,ncol) )
 	{
+		width  = ratio * scale * ncol
+		height = scale * nrow
 		if( self$os == "osx" )
 		{
 			grDevices::quartz( width = width , height = height )
@@ -184,41 +186,17 @@ plt = PlotTools$new()
 ##########
 
 ## Sample data
-l_dist  = list( Exponential$new() , Normal$new( mean = 5 , sd = 1 ) )
-weights = base::c( 0.2 , 0.8 )
 
-rvX = rv_mixture$new( l_dist , weights )
-X   = rvX$rvs( 10000 )
-x   = base::seq( base::min(X) -1 , base::max(X) + 1 , length = 100 )
-p   = base::seq( 1e-3 , 1 - 1e-3 , length = 1000 )
+Y   = ROOPSD::rgev( 100 , loc = 0 , scale = 1 , shape = -0.1 )
+law = ROOPSD::GEV$new()$fit(Y)
 
-
-## Density
-dens = rvX$density(x)
-hist = graphics::hist( X , breaks = 50 , plot = FALSE )
-
-## cdf
-cdf = rvX$cdf(x)
-sf  = rvX$sf(x)
-
-## icdf
-icdf = rvX$icdf(p)
-isf  = rvX$isf(p)
-
-## Plot
-nrow = 1
-ncol = 3
-plt$new_screen( nrow , ncol )
-
-plot( hist$mids , hist$density , col = "red" , type = "h" )
-lines( x , rvX$density(x) , col = "red" )
-
-plot( x , cdf , col = "red" , type = "l" )
-lines( x , sf , col = "blue" )
-
-plot( p , icdf , col = "red" , type = "l" )
-lines( p , isf , col = "blue" )
+nrow = 2
+ncol = 2
+plt$new_screen( nrow , ncol , ratio = 1 , scale = 3 )
+law$diagnostic(Y)
 
 plt$wait()
+
+
 print("Done")
 
