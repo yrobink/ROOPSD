@@ -272,6 +272,61 @@ GEV = R6::R6Class( "GEV",
 		self$loc   = loc
 		self$scale = scale
 		self$shape = shape
+	},
+	##}}}
+	
+	## Methods
+	##========
+	
+	## qgradient ##{{{
+	#' @description
+	#' Gradient of the quantile function
+    #' @param p [vector] Probabilities
+    #' @param lower.tail [bool] If CDF or SF.
+    #' @return [vector] gradient
+	qgradient = function( p , lower.tail = TRUE )
+	{
+		if(!lower.tail)
+			p = 1 - p
+		loc   = self$loc
+		scale = self$scale
+		shape = self$shape
+		tp    = -base::log(p)
+		gradloc   = 1
+		gradscale = ( tp^(-shape) - 1 ) / shape
+		gradshape = scale * ( (1 - tp^(-shape)) / shape^2 - tp^(-shape) * base::log(tp) / shape )
+		grad = base::cbind(gradloc,gradscale,gradshape)
+		
+		return(grad)
+	},
+	##}}}
+	
+	## pgradient ##{{{
+	#' @description
+	#' Gradient of the CDF function
+    #' @param x [vector] Quantiles
+    #' @param lower.tail [bool] If CDF or SF.
+    #' @return [vector] gradient
+	pgradient = function( x , lower.tail = TRUE )
+	{
+		loc   = self$loc
+		scale = self$scale
+		shape = self$shape
+		
+		p    = self$cdf(x)
+		Z    = (x-loc) / scale
+		ZZ   = 1 + shape * Z
+		ZZs  = ZZ^(-1/shape)
+		ZZs1 = ZZs / ZZ
+		
+		gradloc   = -p * ZZs1 / scale
+		gradscale = -p * ZZs1 * Z / scale
+		gradshape = -p / shape^2 * ZZs * ( log(ZZ) - shape * Z / ZZ )
+		grad = cbind(gradloc,gradscale,gradshape)
+		if(!lower.tail)
+			grad = -grad
+		
+		return(grad)
 	}
 	##}}}
 	
