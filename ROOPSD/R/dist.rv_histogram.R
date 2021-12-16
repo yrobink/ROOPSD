@@ -217,7 +217,7 @@ rv_histogram = R6::R6Class( "rv_histogram" ,
     #' @param Y [vector] Dataset to infer the histogram
     #' @param bins [vector or integer] bins values
     #' @return `self`
-	fit = function( Y , bins = as.integer(100) )
+	fit = function( Y , bins = as.integer(1000) )
 	{
 		self$min = base::min(Y)
 		self$max = base::max(Y)
