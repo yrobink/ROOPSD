@@ -82,6 +82,8 @@
 ################################################################################
 ################################################################################
 
+## rv_histogram ##{{{
+
 #' rv_histogram 
 #'
 #' @description
@@ -152,7 +154,7 @@ rv_histogram = R6::R6Class( "rv_histogram" ,
     #' @return density
 	density = function( x ) 
 	{
-		return(private$densityfn(x))
+		return(private$.density(x))
 	},
 	##}}}
 	
@@ -163,7 +165,7 @@ rv_histogram = R6::R6Class( "rv_histogram" ,
     #' @return the log density
 	logdensity = function( x ) 
 	{
-		return(base::log(private$densityfn(x)))
+		return(base::log(private$.density(x)))
 	},
 	##}}}
 	
@@ -174,7 +176,7 @@ rv_histogram = R6::R6Class( "rv_histogram" ,
     #' @return cdf values
 	cdf = function( q )
 	{
-		return(private$cdffn(q))
+		return(private$.cdf(q))
 	},
 	##}}}
 	
@@ -185,7 +187,7 @@ rv_histogram = R6::R6Class( "rv_histogram" ,
     #' @return icdf values
 	icdf = function( p )
 	{
-		return(private$icdffn(p))
+		return(private$.icdf(p))
 	},
 	##}}}
 	
@@ -196,7 +198,7 @@ rv_histogram = R6::R6Class( "rv_histogram" ,
     #' @return sf values
 	sf = function( q ) 
 	{
-		return( 1. - private$cdffn(q) )
+		return( 1. - private$.cdf(q) )
 	},
 	##}}}
 	
@@ -207,7 +209,7 @@ rv_histogram = R6::R6Class( "rv_histogram" ,
     #' @return isf values
 	isf = function( p ) 
 	{
-		return(private$icdffn(1. - p))
+		return(private$.icdf(1. - p))
 	},
 	##}}}
 	
@@ -222,10 +224,21 @@ rv_histogram = R6::R6Class( "rv_histogram" ,
 		self$min = base::min(Y)
 		self$max = base::max(Y)
 		
-		## CDF and iCDF function
-		private$cdffn = stats::ecdf(Y)
+		## Start with cdf and icdf
+		Yr = base::rank( Y , ties.method = "max" )
+		Ys = base::sort(Y)
+		Yru = base::sort(base::unique(Yr))
+		p  = Yru / length(Y)
+		q  = Ys[Yru]
+		
+		p = base::c( 0 , p )
+		q = base::c( self$min - .Machine$double.xmin , q )
+		
+		private$.cdf  = stats::approxfun( q , p , method = "linear" , ties = "ordered" , yleft = 0 , yright = 1 )
+		private$.icdf = stats::approxfun( p , q , method = "linear" , ties = "ordered" , yleft = NaN , yright = NaN )
+		
+		## Continue with density
 		x = NULL
-		delta = NULL
 		if( is.integer(bins) )
 		{
 			delta = 1e-2 * (self$max - self$min)
@@ -234,19 +247,13 @@ rv_histogram = R6::R6Class( "rv_histogram" ,
 		else
 		{
 			x = bins
-			delta = min( diff(bins) )
 		}
-		quants = private$cdffn(x)
-		private$icdffn = stats::approxfun( quants , x ,
-		                                   yleft = self$min - delta ,
-		                                   yright = self$max + delta ,
-		                                   ties = "ordered" )
 		
 		## Density function
 		hist = graphics::hist( Y , breaks = x , plot = FALSE )
 		p = hist$density #/ base::sum(hist$density)
 		c = hist$mids
-		private$densityfn = stats::approxfun( c , p ,
+		private$.density = stats::approxfun( c , p ,
 		                                      yleft = 0 ,
 		                                      yright = 0 ,
 		                                      ties = "ordered" )
@@ -268,11 +275,13 @@ rv_histogram = R6::R6Class( "rv_histogram" ,
 	## Arguments ##
 	###############
 	
-	cdffn     = NULL,
-	icdffn    = NULL,
-	densityfn = NULL
+	.cdf     = NULL,
+	.icdf    = NULL,
+	.density = NULL
 	
 	
 	)
 )
+##}}}
+
 

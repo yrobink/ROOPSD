@@ -93,8 +93,8 @@ library(R6)
 library(devtools)
 library(roxygen2)
 
-roxygen2::roxygenize("../ROOPSD")
-devtools::load_all("../ROOPSD")
+#roxygen2::roxygenize("../ROOPSD")
+#devtools::load_all("../ROOPSD")
 
 
 ###########################
@@ -171,6 +171,208 @@ PlotTools = R6::R6Class( "PlotTools" , ##{{{
 
 plt = PlotTools$new()
 
+## rv_histogram ##{{{
+
+#' rv_histogram 
+#'
+#' @description
+#' rv_histogram distribution in OOP way.
+#'
+#' @details
+#' Use quantile to fit the histogram
+#'
+#' @examples
+#' ## Generate sample
+#' X = numeric(10000)
+#' X[1:5000] = stats::rnorm( n = 5000 , mean = 2 , sd = 1 )
+#' X[5000:10000] = stats::rexp( n = 5000 , rate = 1 )
+#'
+#' ## And fit it
+#' rvX = rv_histogram$new()
+#' rvX$fit(X)
+#'
+#' @export
+rv_histogram = R6::R6Class( "rv_histogram" ,
+	
+	public = list(
+	
+	###############
+	## Arguments ##
+	###############
+	
+	#' @field min [double] min value for the estimation
+	min   = NULL,
+	#' @field max [double] max value for the estimation
+	max   = NULL,
+	#' @field tol [double] numerical tolerance
+	tol = 1e-2,
+	
+	#################
+	## Constructor ##
+	#################
+	
+	## initialize ##{{{
+	#' @description
+    #' Create a new rv_histogram object.
+    #' @param ... If a param `Y` is given, the fit method is called with `...`.
+    #' @return A new `rv_histogram` object.
+	initialize = function(...)
+	{
+		kwargs = list(...)
+		if( !is.null(kwargs[["Y"]]) )
+			base::do.call( self$fit , kwargs )
+	},
+	##}}}
+	
+	## rvs ##{{{
+	#' @description
+    #' Generation sample from the histogram
+    #' @param n [integer] Number of samples drawn
+    #' @return A vector of samples
+	rvs = function( n )
+	{
+		p = stats::runif( n , 0 , 1 )
+		return(self$icdf(p))
+	},
+	##}}}
+	
+	## density ##{{{
+	#' @description
+    #' Density function
+    #' @param x [vector] Values to compute the density
+    #' @return density
+	density = function( x ) 
+	{
+		return(private$.density(x))
+	},
+	##}}}
+	
+	## logdensity ##{{{
+	#' @description
+    #' Log density function
+    #' @param x [vector] Values to compute the log-density
+    #' @return the log density
+	logdensity = function( x ) 
+	{
+		return(base::log(private$.density(x)))
+	},
+	##}}}
+	
+	## cdf ##{{{
+	#' @description
+    #' Cumulative Distribution Function
+    #' @param q [vector] Quantiles to compute the CDF
+    #' @return cdf values
+	cdf = function( q )
+	{
+		return(private$.cdf(q))
+	},
+	##}}}
+	
+	## icdf ##{{{
+	#' @description
+    #' Inverse of Cumulative Distribution Function
+    #' @param p [vector] Probabilities to compute the CDF
+    #' @return icdf values
+	icdf = function( p )
+	{
+		return(private$.icdf(p))
+	},
+	##}}}
+	
+	## sf ##{{{
+	#' @description
+    #' Survival Function
+    #' @param q [vector] Quantiles to compute the SF
+    #' @return sf values
+	sf = function( q ) 
+	{
+		return( 1. - private$.cdf(q) )
+	},
+	##}}}
+	
+	## isf ##{{{
+	#' @description
+    #' Inverse of Survival Function
+    #' @param p [vector] Probabilities to compute the SF
+    #' @return isf values
+	isf = function( p ) 
+	{
+		return(private$.icdf(1. - p))
+	},
+	##}}}
+	
+	## fit ##{{{
+	#' @description
+    #' Fit method for the histograms
+    #' @param Y [vector] Dataset to infer the histogram
+    #' @param bins [vector or integer] bins values
+    #' @return `self`
+	fit = function( Y , bins = as.integer(1000) )
+	{
+		self$min = base::min(Y)
+		self$max = base::max(Y)
+		
+		## Start with cdf and icdf
+		Yr = base::rank( Y , ties.method = "max" )
+		Ys = base::sort(Y)
+		Yru = base::sort(base::unique(Yr))
+		p  = Yru / length(Y)
+		q  = Ys[Yru]
+		
+		p = base::c( 0 , p )
+		q = base::c( self$min - .Machine$double.xmin , q )
+		
+		private$.cdf  = stats::approxfun( q , p , method = "linear" , ties = "ordered" , yleft = 0 , yright = 1 )
+		private$.icdf = stats::approxfun( p , q , method = "linear" , ties = "ordered" , yleft = NaN , yright = NaN )
+		
+		## Continue with density
+		x = NULL
+		if( is.integer(bins) )
+		{
+			delta = 1e-2 * (self$max - self$min)
+			x = base::seq( self$min - delta , self$max + delta , length = bins )
+		}
+		else
+		{
+			x = bins
+		}
+		
+		## Density function
+		hist = graphics::hist( Y , breaks = x , plot = FALSE )
+		p = hist$density #/ base::sum(hist$density)
+		c = hist$mids
+		private$.density = stats::approxfun( c , p ,
+		                                      yleft = 0 ,
+		                                      yright = 0 ,
+		                                      ties = "ordered" )
+		
+		return(self)
+	}
+	##}}}
+	
+	),
+	
+	
+	######################
+	## Private elements ##
+	######################
+	
+	private = list(
+	
+	###############
+	## Arguments ##
+	###############
+	
+	.cdf     = NULL,
+	.icdf    = NULL,
+	.density = NULL
+	
+	
+	)
+)
+##}}}
+
 
 #############
 ## Classes ##
@@ -187,13 +389,20 @@ plt = PlotTools$new()
 
 ## Sample data
 
-Y   = ROOPSD::rgev( 100 , loc = 0 , scale = 1 , shape = -0.1 )
-law = ROOPSD::GEV$new()$fit(Y)
+X = stats::rexp( n = 10000 )
+X[X<0.1] = 0
 
-nrow = 2
-ncol = 2
-plt$new_screen( nrow , ncol , ratio = 1 , scale = 3 )
-law$diagnostic(Y)
+rvX = rv_histogram$new()$fit(X)
+
+
+x = base::seq( -0.5 , 5 , length = 1000 )
+
+
+
+plt$new_screen( 1 , 1 )
+
+plot( x , pexp(x) , col = "blue" , type = "l" )
+lines( x , rvX$cdf(x) , col = "red" )
 
 plt$wait()
 
