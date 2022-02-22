@@ -231,13 +231,14 @@ rv_histogram = R6::R6Class( "rv_histogram" ,
 		p  = Yru / length(Y)
 		q  = Ys[Yru]
 		
-		p = base::c( 0 , p )
-		q = base::c( self$min , q )
-		if( q[1] == q[2] )
-		{
-			eps  = base::sqrt(.Machine$double.xmin)
-			q[2] = (1-eps) * q[1] + eps * q[3]
-		}
+		p[1] = 0
+#		p = base::c( 0 , p )
+#		q = base::c( self$min , q )
+#		if( q[1] == q[2] )
+#		{
+#			eps  = base::sqrt(.Machine$double.xmin)
+#			q[2] = (1-eps) * q[1] + eps * q[3]
+#		}
 #		q = base::c( self$min - .Machine$double.xmin , q )
 		
 		private$.cdf  = stats::approxfun( q , p , method = "linear" , ties = "ordered" , yleft = 0 , yright = 1 )
