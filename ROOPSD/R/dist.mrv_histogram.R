@@ -219,7 +219,7 @@ mrv_histogram = R6::R6Class( "mrv_histogram" ,
     #' @return icdf values
 	icdf = function( p )
 	{
-		if( !is.matrix(p) ) p = matrix( p , nrow = length(x) , ncol = 1 )
+		if( !is.matrix(p) ) p = matrix( p , nrow = length(p) , ncol = 1 )
 		out = base::c()
 		for( i in 1:self$n_features )
 		{
@@ -236,7 +236,7 @@ mrv_histogram = R6::R6Class( "mrv_histogram" ,
     #' @return isf values
 	isf = function( p )
 	{
-		if( !is.matrix(p) ) p = matrix( p , nrow = length(x) , ncol = 1 )
+		if( !is.matrix(p) ) p = matrix( p , nrow = length(p) , ncol = 1 )
 		out = base::c()
 		for( i in 1:self$n_features )
 		{
