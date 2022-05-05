@@ -112,6 +112,8 @@ AbstractDist = R6::R6Class( "AbstractDist",
 	.opt = NULL,
 	#' @field cov [matrix] Covariance matrix of parameters, inverse of hessian
 	.cov = NULL,
+	#' @field coef [vector] Vector of coefficients
+	.coef = NULL,
 	
 	## Methods
 	##========
@@ -120,7 +122,14 @@ AbstractDist = R6::R6Class( "AbstractDist",
 	negloglikelihood = function( params , Y )
 	{
 		self$params = params
-		return(-base::sum(self$logdensity(Y)))
+		return( - base::sum( base::suppressWarnings(self$logdensity(Y)) ) )
+	},
+	##}}}
+	
+	## gradient_negloglikelihood_withoutwarnings ##{{{
+	gradient_neglll_ww = function( params , Y )
+	{
+		return( private$gradient_negloglikelihood( params , Y ) )
 	},
 	##}}}
 	
@@ -142,6 +151,19 @@ AbstractDist = R6::R6Class( "AbstractDist",
 		if(base::missing(value))
 		{
 			return(private$.name)
+		}
+	},
+	##}}}
+	
+	## name ##{{{
+	coef = function(coef) 
+	{
+		if(base::missing(coef))
+		{
+			coef = c()
+			for( i in 1:length(self$params) )
+				coef = base::c(coef,self$params[[i]])
+			return(coef)
 		}
 	},
 	##}}}
@@ -189,6 +211,9 @@ AbstractDist = R6::R6Class( "AbstractDist",
 	rdist = NULL,
 	#' @field ks.test [ks.test] Goodness of fit with ks.test
 	ks.test = NULL,
+	#' @field fit_success [bool] TRUE only if the fit is a success and is occurred
+	fit_success = FALSE,
+	
 	
 	## Constructor
 	##============
@@ -320,22 +345,60 @@ AbstractDist = R6::R6Class( "AbstractDist",
 	#' @description
     #' Fit method
     #' @param Y [vector] Dataset to infer the histogram
+    #' @param n_max_try [integer] Because the optim function can fails, the fit
+    #'                            is retry n_try times.
     #' @return `self`
-	fit = function(Y)
+	fit = function( Y , n_max_try = 100 )
 	{
+		## Initialization
 		private$fit_initialization(Y)
+		
+		## Prepare optimization params
+		optparams = list( fn = private$negloglikelihood , method = "BFGS" , hessian = TRUE , Y = Y )
 		if( private$.has_gr_nlll )
-			private$.opt = stats::optim( par = as.vector(self$params) , fn = private$negloglikelihood , method = "BFGS" , hessian = TRUE , Y = Y , gr = private$gradient_negloglikelihood )
-		else
-			private$.opt = stats::optim( par = as.vector(self$params) , fn = private$negloglikelihood , method = "BFGS" , hessian = TRUE , Y = Y )
+			optparams$gr = private$gradient_neglll_ww
+		
+		## Prepare for random initial condition
+		params_m = self$coef
+		params_c = diag(length(self$params)) / 10
+		
+		## Loop for the fit
+		private$.opt = try( stop() , silent = TRUE )
+		n_try = 0
+		while( class(private$.opt) == "try-error"  && n_try < n_max_try )
+		{
+			## Try the fit
+			n_try         = n_try + 1
+			optparams$par = as.vector(self$params)
+			private$.opt  = try( do.call( stats::optim , optparams ) , silent = TRUE )
+			
+			## Fail, draw a new initial condition
+			if( class(private$.opt) == "try-error" )
+			{
+				self$params = rmultivariate_normal( n = 1 , mean = params_m , cov = params_c )
+				
+				if( n_try %% 10 == 0 )
+					params_c = 2 * params_c
+			}
+		}
+		
+		## OK, the fit is maybe really impossible
+		if( class(private$.opt) == "try-error" )
+		{
+			self$params = params_m
+			return(self)
+		}
+		
+		## Good!
+		self$fit_success = TRUE
 		self$params = self$opt$par
 		self$cov    = base::try( base::solve(self$opt$hessian) , silent = TRUE )
 		
 		## Goodness of fit
-		ksparams = self$params
-		ksparams$x = Y
-		ksparams$y = self$pdist
-		self$ks.test = base::do.call( stats::ks.test , ksparams )
+		ksparams     = self$params
+		ksparams$x   = Y
+		ksparams$y   = self$pdist
+		self$ks.test = suppressWarnings( base::do.call( stats::ks.test , ksparams ) )
 		self$ks.test$data.name = NULL
 		
 		return(self)
