@@ -2,7 +2,7 @@
 ################################################################################
 ################################################################################
 ##                                                                            ##
-## Copyright Yoann Robin, 2020                                                ##
+## Copyright Yoann Robin, 2020-2022                                           ##
 ##                                                                            ##
 ## yoann.robin.k@gmail.com                                                    ##
 ##                                                                            ##
@@ -43,7 +43,7 @@
 ################################################################################
 ################################################################################
 ##                                                                            ##
-## Copyright Yoann Robin, 2020                                                ##
+## Copyright Yoann Robin, 2020-2022                                           ##
 ##                                                                            ##
 ## yoann.robin.k@gmail.com                                                    ##
 ##                                                                            ##
@@ -129,7 +129,7 @@ AbstractDist = R6::R6Class( "AbstractDist",
 	## gradient_negloglikelihood_withoutwarnings ##{{{
 	gradient_neglll_ww = function( params , Y )
 	{
-		return( private$gradient_negloglikelihood( params , Y ) )
+		return( base::suppressWarnings(private$gradient_negloglikelihood( params , Y )) )
 	},
 	##}}}
 	
