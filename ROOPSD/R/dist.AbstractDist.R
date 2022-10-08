@@ -365,7 +365,7 @@ AbstractDist = R6::R6Class( "AbstractDist",
 		## Loop for the fit
 		private$.opt = try( stop() , silent = TRUE )
 		n_try = 0
-		while( class(private$.opt) == "try-error"  && n_try < n_max_try )
+		while( is(private$.opt,"try-error") && n_try < n_max_try )
 		{
 			## Try the fit
 			n_try         = n_try + 1
@@ -373,7 +373,7 @@ AbstractDist = R6::R6Class( "AbstractDist",
 			private$.opt  = try( do.call( stats::optim , optparams ) , silent = TRUE )
 			
 			## Fail, draw a new initial condition
-			if( class(private$.opt) == "try-error" )
+			if( is(private$.opt,"try-error") )
 			{
 				self$params = rmultivariate_normal( n = 1 , mean = params_m , cov = params_c )
 				
@@ -383,7 +383,7 @@ AbstractDist = R6::R6Class( "AbstractDist",
 		}
 		
 		## OK, the fit is maybe really impossible
-		if( class(private$.opt) == "try-error" )
+		if( is(private$.opt,"try-error") )
 		{
 			self$params = params_m
 			return(self)
