@@ -2,7 +2,7 @@
 ################################################################################
 ################################################################################
 ##                                                                            ##
-## Copyright Yoann Robin, 2020                                                ##
+## Copyright Yoann Robin, 2020, 2023                                          ##
 ##                                                                            ##
 ## yoann.robin.k@gmail.com                                                    ##
 ##                                                                            ##
@@ -171,15 +171,16 @@ GPD = R6::R6Class( "GPD",
 	{
 		if(missing(value))
 		{
-			return( list( scale = private$.scale , shape = private$.shape ) )
+			return( list( loc = private$.loc , scale = private$.scale , shape = private$.shape ) )
 		}
 		else
 		{
-			if(is.numeric(value) && length(value) == 2 )
+			if(is.numeric(value) && length(value) == 3 )
 			{
-				if( value[1] > 0 )
-					private$.scale = value[1]
-				private$.shape = value[2]
+				if( value[2] > 0 )
+					private$.scale = value[2]
+				private$.loc   = value[1]
+				private$.shape = value[3]
 			}
 			
 		}
@@ -271,11 +272,13 @@ GPD = R6::R6Class( "GPD",
     #' @return `self`
 	fit = function( Y , loc = NULL )
 	{
+		self$loc = 0
+		if( is.null(loc) )
+			loc = base::min(Y)
+		super$fit( Y - loc )
 		self$loc = loc
-		if( is.null(self$loc) )
-			self$loc = base::min(Y)
 		
-		return(super$fit(Y))
+		return(self)
 	}
 	##}}}
 	

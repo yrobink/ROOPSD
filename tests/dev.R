@@ -93,8 +93,8 @@ library(R6)
 library(devtools)
 library(roxygen2)
 
-#roxygen2::roxygenize("../ROOPSD")
-#devtools::load_all("../ROOPSD")
+roxygen2::roxygenize("../ROOPSD")
+devtools::load_all("../ROOPSD")
 
 
 ###########################
@@ -389,22 +389,28 @@ rv_histogram = R6::R6Class( "rv_histogram" ,
 
 ## Sample data
 
-X = stats::rexp( n = 10000 )
-X[X<0.1] = 0
+#X = stats::rexp( n = 10000 )
+#X[X<0.1] = 0
+#
+#rvX = rv_histogram$new()$fit(X)
+#
+#
+#x = base::seq( -0.5 , 5 , length = 1000 )
+#
+#
+#
+#plt$new_screen( 1 , 1 )
+#
+#plot( x , pexp(x) , col = "blue" , type = "l" )
+#lines( x , rvX$cdf(x) , col = "red" )
+#
+#plt$wait()
 
-rvX = rv_histogram$new()$fit(X)
+X = stats::rnorm(20000)
+E = X[X > stats::quantile( X , 0.95 )]
 
-
-x = base::seq( -0.5 , 5 , length = 1000 )
-
-
-
-plt$new_screen( 1 , 1 )
-
-plot( x , pexp(x) , col = "blue" , type = "l" )
-lines( x , rvX$cdf(x) , col = "red" )
-
-plt$wait()
+gpd = ROOPSD::GPD$new()$fit(E)
+print(gpd$params)
 
 
 print("Done")
